@@ -11,8 +11,11 @@ function CommentsCtrl(template) {
 
     template = $(template);
     var $content = template.find('.content');
+    navigation.on('onClose', function() {
+        ReactDOM.unmountComponentAtNode($content[0]);
+    });
     ReactDOM.render(<PostDetail post={post} />, $content[0]);
-    
+
     var elCreateComment = template.find('#createComment');
     elCreateComment.on('click', function(e) {
         CommentService.createComment({

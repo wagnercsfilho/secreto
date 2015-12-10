@@ -3,23 +3,23 @@ var PostService = require("../../services/post");
 var PostModel = require("../../models/post");
 var LikeButton = require("../LikeButton");
 
-var initialState = function() {
-    this.setState({
-        post: PostModel.getById(this.props.post._id)
-    });
-}
 
 var PostBox = React.createClass({
-    getInitialState: function(){
+    setPost: function() {
+        this.setState({
+            post: PostModel.getById(this.props.post._id)
+        });
+    },
+    getInitialState: function() {
         return {
             post: PostModel.getById(this.props.post._id)
         }
     },
     componentDidMount: function() {
-        PostModel.subscribe(initialState.bind(this));
+        PostModel.subscribe(this.setPost);
     },
     componentWillUnmount: function() {
-        PostModel.unsubscribe(initialState);
+        PostModel.unsubscribe(this.setPost);
     },
     _closePage: function() {
         navigation.closeCurrentPage();

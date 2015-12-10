@@ -19648,12 +19648,6 @@ var CommentService = require("../../services/comment");
 var CommentModel = require("../../models/comment");
 var CommentItem = require("./CommentItem");
 
-var initialState = function () {
-    this.setState({
-        comments: CommentModel.all()
-    });
-};
-
 var addComment = function (comment) {
     CommentModel.add(comment);
 };
@@ -19661,19 +19655,24 @@ var addComment = function (comment) {
 var CommentBox = React.createClass({
     displayName: "CommentBox",
 
+    setComments: function () {
+        this.setState({
+            comments: CommentModel.all()
+        });
+    },
     getInitialState: function () {
         return {
             comments: CommentModel.all()
         };
     },
     componentDidMount: function () {
+        CommentModel.subscribe(this.setComments);
         CommentService.getPostComments(this.props.post);
-        CommentModel.subscribe(initialState.bind(this));
 
         CommentService.on('newComment_' + this.props.post._id, addComment);
     },
     componentWillUnmount: function () {
-        CommentModel.unsubscribe(initialState);
+        CommentModel.unsubscribe(this.setComments);
         CommentService.removeListener('newComment_' + this.props.post._id, addComment);
     },
     render: function () {
@@ -19767,25 +19766,24 @@ var PostService = require("../../services/post");
 var PostModel = require("../../models/post");
 var LikeButton = require("../LikeButton");
 
-var initialState = function () {
-    this.setState({
-        post: PostModel.getById(this.props.post._id)
-    });
-};
-
 var PostBox = React.createClass({
     displayName: "PostBox",
 
+    setPost: function () {
+        this.setState({
+            post: PostModel.getById(this.props.post._id)
+        });
+    },
     getInitialState: function () {
         return {
             post: PostModel.getById(this.props.post._id)
         };
     },
     componentDidMount: function () {
-        PostModel.subscribe(initialState.bind(this));
+        PostModel.subscribe(this.setPost);
     },
     componentWillUnmount: function () {
-        PostModel.unsubscribe(initialState);
+        PostModel.unsubscribe(this.setPost);
     },
     _closePage: function () {
         navigation.closeCurrentPage();
@@ -19903,6 +19901,9 @@ function CommentsCtrl(template) {
 
     template = $(template);
     var $content = template.find('.content');
+    navigation.on('onClose', function () {
+        ReactDOM.unmountComponentAtNode($content[0]);
+    });
     ReactDOM.render(React.createElement(PostDetail, { post: post }), $content[0]);
 
     var elCreateComment = template.find('#createComment');
@@ -20279,6 +20280,10 @@ module.exports = {
 
     on: function (event, fn) {
         socket.on(event, fn);
+    },
+
+    removeListener: function (event, fn) {
+        socket.removeListener(event, fn);
     }
 };
 
@@ -20349,6 +20354,10 @@ module.exports = {
 
     on: function (event, fn) {
         socket.on(event, fn);
+    },
+
+    removeListener: function (event, fn) {
+        socket.removeListener(event, fn);
     }
 };
 

@@ -26,5 +26,9 @@ module.exports = {
 
     on: function(event, fn) {
         socket.on(event, fn);
+    },
+    
+    removeListener: function(event, fn){
+        socket.removeListener(event, fn);
     }
 }
