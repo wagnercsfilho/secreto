@@ -1,14 +1,26 @@
+var CommentModel = require("../models/comment");
+var PostModel = require("../models/post");
+
 module.exports = {
 
     getPostComments: function(post, cb) {
         socket.emit('getPostComments', post, function(err, comments) {
-            cb(comments);
+            CommentModel.set(comments);
+            if (cb) cb(comments);
         });
     },
 
     createComment: function(data, cb) {
-        socket.emit('createComment', data, function(err, comment) {
-            cb(comment);
+        socket.emit('createComment', {
+            _post: data.post._id,
+            text: data.text,
+            user: data.user
+        }, function(err, comment) {
+            CommentModel.add(comment);
+            var post = data.post;
+            post.comments += 1;
+            PostModel.updateById(post);
+            if (cb) cb(comment);
         });
     },
 

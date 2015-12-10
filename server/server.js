@@ -30,7 +30,10 @@ var Post = mongoose.model('Post', {
         type: Number,
         default: 0
     },
-    createdAt: { type: Date, default: Date.now }
+    createdAt: {
+        type: Date,
+        default: Date.now
+    }
 });
 var Comment = mongoose.model('Comment', {
     text: String,
@@ -39,17 +42,36 @@ var Comment = mongoose.model('Comment', {
         ref: 'Post'
     },
     user: mongoose.Schema.Types.Mixed,
-    createdAt: { type: Date, default: Date.now }
-}); 
+    createdAt: {
+        type: Date,
+        default: Date.now
+    }
+});
+var Notification = mongoose.model('Notification', {
+    type: String,
+    _post: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Post'
+    },
+    user: mongoose.Schema.Types.Mixed,
+    createdAt: {
+        type: Date,
+        default: Date.now
+    },
+    read: {
+        type: Boolean,
+        default: false
+    }
+});
 
 io.on('connection', function(socket) {
     socket.on('createPost', function(data, cb) {
         Post.create(data, function(err, post) {
- 
+
             socket.emit('newPost', post);
 
             cb(err, post);
-        }); 
+        });
     });
 
     socket.on('likePost', function(data, cb) {
@@ -57,9 +79,43 @@ io.on('connection', function(socket) {
 
             if (post.likes === undefined) post.likes = [];
             post.likes.push(data.facebook_id);
- 
+
+            post.save(function(err, post) {
+                socket.broadcast.emit('newLike_' + post._id, post);
+
+                if (data.facebook_id !== post.user.facebook_id) {
+                    Notification.remove({
+                        '_post': post._id
+                    }, function(err) {
+                        Notification.create({
+                            type: 'LIKE',
+                            user: post.user,
+                            _post: post._id,
+                            read: false
+                        }, function(err, notification) {
+                            io.sockets.emit('newNotification_' + post.user.facebook_id, notification);
+
+                            cb(err, post);
+                        });
+                    });
+                }
+                else {
+                    cb(err, post);
+                }
+
+            });
+
+
+
+        });
+    });
+
+    socket.on('dislikePost', function(data, cb) {
+        Post.findById(data.post._id, function(err, post) {
+
+            post.likes.splice(post.likes.indexOf(data.facebook_id), 1);
             post.save(function(err, data) {
-                socket.emit('newLike_' + data._id, data);
+                socket.broadcast.emit('dislike_' + data._id, data);
                 cb(err, data);
             });
 
@@ -71,7 +127,9 @@ io.on('connection', function(socket) {
             'user.facebook_id': {
                 $in: data
             }
-        }).exec(function(err, data) {
+        })
+        .sort({ _id: -1 })
+        .exec(function(err, data) {
             cb(err, data);
         });
     });
@@ -91,10 +149,34 @@ io.on('connection', function(socket) {
             Post.findById(data._post, function(err, post) {
                 if (post.comments === undefined) post.comments = 0;
                 post.comments += 1;
-                post.save(function(err, data) {
-                    io.sockets.emit('newComment_' + data._id, data);
-                    cb(err, data);
+                post.save(function(err, post) {
+                    socket.broadcast.emit('newComment_' + post._id, comment);
+                    socket.broadcast.emit('updateCommentCount_' + post._id, post);
+
+                    if (data.user.facebook_id !== post.user.facebook_id) {
+                        Notification.remove({
+                            '_post': post._id
+                        }, function(err) {
+                            Notification.create({
+                                type: 'COMMENT',
+                                user: post.user,
+                                _post: post._id,
+                                read: false
+                            }, function(err, notification) {
+                                socket.broadcast.emit('newNotification_' + post.user.facebook_id, notification);
+
+                                cb(err, comment);
+                            });
+                        });
+
+                    }
+                    else {
+                        cb(err, comment);
+                    }
+
                 });
+
+
             });
 
         });
@@ -104,9 +186,45 @@ io.on('connection', function(socket) {
         Comment.find({
             _post: data._id
         }).exec(function(err, comment) {
-            console.log(err, comment)
             cb(err, comment);
         });
+    });
+
+    socket.on('getUnreadNotification', function(data, cb) {
+        Notification.find({
+                'user.facebook_id': data.facebook_id,
+                read: false
+            })
+            .populate('_post')
+            .exec(function(err, notification) {
+                cb(err, notification);
+            });
+    });
+
+    socket.on('getAllNotification', function(data, cb) {
+        Notification.find({
+                'user.facebook_id': data.facebook_id,
+            })
+            .populate('_post')
+            .exec(function(err, notification) {
+                cb(err, notification);
+            });
+    });
+
+    socket.on('readAllNotifications', function(data, cb) {
+        Notification.update({
+                'user.facebook_id': data.facebook_id,
+                read: false
+            }, {
+                $set: {
+                    read: true
+                }
+            }, {
+                multi: true
+            },
+            function(err, notification) {
+                cb(err, notification);
+            });
     });
 });
 

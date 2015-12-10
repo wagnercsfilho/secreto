@@ -5,7 +5,12 @@ body {
     font-weight: 300;
 }
 
-.quote-card {
+ul.quote-card{
+    margin: 0;
+    padding: 0;
+}
+
+ul.quote-card li {
     background: #fff;
     color: #222222;
     padding: 20px;
@@ -25,6 +30,19 @@ body {
     border-bottom: 2px solid rgba(255, 255, 255, 0.1);
 }
 
+.quote-mini {
+    overflow: hidden;
+    min-height: 200px;
+    height: 200px;
+    width: 50%;
+    display: inline-block;
+    opacity: 0.5;
+}
+
+.quote-noti-read{
+    opacity: 1;
+}
+
 .quote-card:before{
     content: ' ';
     position: absolute;
@@ -36,8 +54,7 @@ body {
     z-index: -100;
 }
 
-
-.quote-card p {
+ul.quote-card li p {
     text-align: center;
     font-size: 22px;
     line-height: 1.5;
@@ -49,7 +66,17 @@ body {
     padding: 25% 0px;
 }
 
-.quote-card cite {
+.quote-mini p{
+    height: 100%;
+    font-size: 12px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+}
+ul.quote-card li cite {
     font-size: 16px;
     margin-top: 10px;
     display: block;
@@ -59,92 +86,92 @@ body {
     font-style: normal;
 }
 
-.quote-card .quote_bottom {
+ul.quote-card li .quote_bottom {
     position: absolute;
     bottom: 5px;
     left: 5px;
     right: 15px;
 }
 
-.quote_bottom span {
+ul.quote-card li .quote_bottom span {
     display: inline-block;
     line-height: 40px;
     font-size: 14px;
     opacity: 0.8;
 }
 
-.quote_bottom .button .icon{
+ul.quote-card li .quote_bottom .button .icon{
     font-size: 22px;
 }
 
-.quote-card .quote_top {
+ul.quote-card li  .quote_top {
     position: absolute;
     top: 5px;
     left: 5px;
     right: 5px;
 }
 
-.quote-card.red{
+.quote-card li.red{
     background-image: url('../textures/snow.png');
     background-color: #c0392b;
     color: #ffffff;
 }
 
-.quote-card.pink{
+.quote-card li.pink{
     background-image: url('../textures/xv.png');
     background-color: #E08283;
     color: #ffffff;
 }
 
-.quote-card.black{
+.quote-card li.black{
     background-image: url('../textures/snow.png');
     background-color: #000000;
     color: #ffffff;
 }
 
-.quote-card.white{
+.quote-card li.white{
     background-image: url('../textures/white_wall_hash.png');
     background-color: #ffffff;
     color: #000;
 }
 
-.quote-card.teal{
+.quote-card li.teal{
     background-image: url('../textures/egg-shell.png');
     background-color: #16a085;
     color: #ffffff;
 }
 
-.quote-card.purple{
+.quote-card li.purple{
     background-image: url('../textures/snow.png');
     background-color: #9b50ba;
     color: #ffffff;
 }
 
-.quote-card.blue{
+.quote-card li.blue{
     background-image: url('../textures/snow.png');
     background-color: #446CB3;
     color: #ffffff;
 }
 
-.quote-card.blue2{
+.quote-card li.blue2{
     background-image: url('../textures/type.png');
     background-color: #446CB3;
     color: #ffffff;
 }
 
-.quote-card.orange{
+.quote-card li.orange{
     background-image: url('../textures/light-paper-fibers.png');
     background-color: #F39C12;
     color: #ffffff;
 }
 
-.quote-card.gray{
+.quote-card li.gray{
     background-image: url('../textures/snow.png');
     background-color: #6C7A89;
     color: #ffffff;
 }
 
-.quote-card.green{
+.quote-card li.green{
     background-image: url('../textures/white-wall-3-2.png');
     background-color: #27ae60;
     color: #ffffff;
@@ -160,15 +187,29 @@ body {
     text-align: center;
 }
 
-.quotebg {
-    content: " ";
-    padding: 20px;
-    margin-top: 2px;
-}
-
 .avatarUserQuote {
     width: 10%;
     border-radius: 50%;
     vertical-align: middle;
     margin-right: 10px;
+}
+
+.hide{
+    display: none;
+}
+
+.badge{
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 5px;
+    right: 0;
+    line-height: 18px;
+    border-radius: 50%;
+    color: #ffffff;
+    font-size: 11px;
+}
+
+.footer .text-field{
+    margin: 0;
 }

@@ -1,18 +1,22 @@
 <div class="pages">
     <header class="header header--shadow" style="height: 48px;">
-            <div id="tab" class="tab-bar bg-white tab-bar--text-black tab-bar--indicator-bottom-black" style="top:0; display: block;">
-                <div class="tab-bar__item ripple" style="display: inline-block;padding: 0 15px;" data-tab="#tabNotifications">
-                    <i class="icon mdi mdi-bell-outline"></i>
-                </div>
-                <div class="tab-bar__item ripple active" style="display: inline-block;padding: 0 15px;" data-tab="#tabFriends">
-                    <i class="icon mdi mdi-home"></i>
-                </div>
-                <div class="tab-bar__item ripple" style="display: inline-block;padding: 0 15px;" data-tab="#tabWorld">
-                    <i class="icon mdi mdi-earth"></i>
-                </div>
+        <div id="tab" class="tab-bar bg-white tab-bar--text-black tab-bar--indicator-bottom-black" style="top:0; display: block;">
+            <div class="tab-bar__item ripple" id="tabItemNotifications" style="display: inline-block;padding: 0 15px;" data-tab="#tabNotifications">
+                <i class="icon mdi mdi-bell-outline"></i>
+                <div class="badge bg-red hide" id="badgeNotification">0</div>
             </div>
+            <div class="tab-bar__item ripple active" style="display: inline-block;padding: 0 15px;" data-tab="#tabFriends">
+                <i class="icon mdi mdi-home"></i>
+            </div>
+            <div class="tab-bar__item ripple" style="display: inline-block;padding: 0 15px;" data-tab="#tabWorld">
+                <i class="icon mdi mdi-earth"></i>
+            </div>
+        </div>
     </header>
     <section class="content has-header" style="padding-top: 48px;" id="tabNotifications">
+        <ul class="list" id="listNotifications">
+
+        </ul>
     </section>
     <section class="content has-header" style="padding-top: 48px;" id="tabFriends">
     </section>

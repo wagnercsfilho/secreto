@@ -12,8 +12,8 @@ var gulp = require('gulp'),
 var config = {
 	pluginName: 'secreto',
 	mainFile: './src/app.js',
-	dest: { 
-	    js: './dist/js/'
+	dest: {
+		js: './dist/js/'
 	}
 };
 
@@ -28,7 +28,7 @@ var banner = ['/**',
 ].join('\n');
 
 gulp.task('phonegap', function() {
-   return gulp.src(['!node_modules/**/*','**/*', '!node_modules/**/*']).pipe(gulp.dest('../phonegap/secreto/www/')); 
+	return gulp.src(['!node_modules/**/*', '**/*', '!node_modules/**/*']).pipe(gulp.dest('../phonegap/secreto/www/'));
 });
 
 gulp.task('jshint', function() {
@@ -49,11 +49,10 @@ gulp.task('browserify', function() {
 
 function browserifyShare(watch) {
 	var b = browserify({
-		cache: {},
-		packageCache: {},
-		notify: false,
 		standalone: config.pluginName
-	}).transform(babel);
+	}).transform(babel.configure({
+		presets: ["react"]
+	}));
 
 	if (watch) {
 		b = watchify(b);

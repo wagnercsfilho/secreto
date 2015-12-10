@@ -2,13 +2,30 @@ var PostDetailsTemplate = require("../templates/postDetails");
 var CommentTemplate = require("../templates/comment");
 var CommentService = require("../services/comment");
 
+var React = require("react");
+var ReactDOM = require('react-dom');
+var PostDetail = require("../components/PostDetail/PostDetail");
+
 function CommentsCtrl(template) {
     var post = navigation.params;
-    
+
     template = $(template);
-    var elContent = template.find('.content');
-    var elComments = template.find('#comments');
+    var $content = template.find('.content');
+    ReactDOM.render(<PostDetail post={post} />, $content[0]);
+    
     var elCreateComment = template.find('#createComment');
+    elCreateComment.on('click', function(e) {
+        CommentService.createComment({
+            post: post,
+            text: template.find('input').val(),
+            user: window.currentUser
+        }, function(comment) {
+            var notification = new phonepack.Notification();
+            notification.success('Successfully');
+            template.find('input').val('');
+        });
+    });
+    /*var elCreateComment = template.find('#createComment');
     var elText = template.find('input');
 
     PostDetailsTemplate(elContent, post, false);
@@ -40,7 +57,9 @@ function CommentsCtrl(template) {
 
             elText.val('');
         });
-    });
+    });*/
+
+
 }
 
 module.exports = CommentsCtrl;
