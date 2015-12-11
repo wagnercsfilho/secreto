@@ -1,5 +1,6 @@
 var React = require("react");
 var classNames = require('classnames');
+var CommentService = require("../../services/comment");
 
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -16,6 +17,18 @@ var avatarColors = ['bg-red', 'bg-pink', 'bg-purple', 'bg-deep-purple', 'bg-indi
 
 
 var CommentItem = React.createClass({
+
+    _likeComment: function() {
+        var comment = this.props.comment;
+        
+        if (comment.likes.indexOf(currentUser.facebook_id) === -1) {
+            CommentService.like(this.props.comment);
+        }
+        else {
+            CommentService.dislike(this.props.comment);
+        }
+    },
+
     render: function() {
         var comment = this.props.comment;
 
@@ -36,13 +49,20 @@ var CommentItem = React.createClass({
 
         var btnClass = classNames(classes);
 
+        var btnLike = classNames({
+            'button': true,
+            'ripple': true,
+            'button--icon': true,
+            'text-red': comment.likes.indexOf(currentUser.facebook_id) > -1
+        });
+
         return (<li className="list__item">
                         <div className="list__primary">
                             <i className={btnClass}></i>
                         </div>
                         <div className="list__content"> { comment.text } </div>
                         <div className="list__secondary">
-                            <button className="button button--icon ripple">
+                            <button className={btnLike} onClick={this._likeComment}>
                                 <i className="icon mdi mdi-heart-outline" />
                             </button>
                         </div>

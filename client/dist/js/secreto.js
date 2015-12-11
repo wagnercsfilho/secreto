@@ -20425,13 +20425,20 @@ var CommentActions = {
             actionType: CommentConstants.COMMENT_DESTROY,
             id: id
         });
+    },
+
+    like: function (comment) {
+        AppDispatcher.handleViewAction({
+            actionType: CommentConstants.COMMENT_LIKE,
+            data: comment
+        });
     }
 
 };
 
 module.exports = CommentActions;
 
-},{"../actions/PostActions":164,"../constants/CommentConstants":173,"../dispatcher/AppDispatcher":179}],164:[function(require,module,exports){
+},{"../actions/PostActions":164,"../constants/CommentConstants":174,"../dispatcher/AppDispatcher":180}],164:[function(require,module,exports){
 /**
  * PostActions
  */
@@ -20489,7 +20496,7 @@ var PostActions = {
 
 module.exports = PostActions;
 
-},{"../constants/PostConstants":174,"../dispatcher/AppDispatcher":179}],165:[function(require,module,exports){
+},{"../constants/PostConstants":175,"../dispatcher/AppDispatcher":180}],165:[function(require,module,exports){
 /*global io*/
 /*global navigation*/
 /*global socket*/
@@ -20540,45 +20547,83 @@ $(function () {
        });*/
 });
 
-},{"./controllers/home":177,"./controllers/login":178}],166:[function(require,module,exports){
+},{"./controllers/home":178,"./controllers/login":179}],166:[function(require,module,exports){
 var React = require("react");
-var classNames = require('classnames');
-var PostService = require("../services/post");
+var PostList = require("./PostList");
+var ComposeCtrl = require("../../controllers/compose");
+var PostService = require("../../services/post");
 
-var LikeButton = React.createClass({
-    displayName: "LikeButton",
+var Home = React.createClass({
+    displayName: "Home",
 
-    _likePost: function () {
-        var post = this.props.post;
+    componentDidMount: function () {},
 
-        if (post.likes.indexOf(currentUser.facebook_id) === -1) {
-            PostService.likePost(post);
-        } else {
-            PostService.dislikePost(post);
-        }
+    _addTabPlugin: function (input) {
+        new phonepack.TabBar(input);
     },
-    render: function () {
-        var post = this.props.post;
 
-        var btnClass = classNames({
-            'button': true,
-            'ripple': true,
-            'button--icon': true,
-            'like': true,
-            'text-red': post.likes.indexOf(currentUser.facebook_id) > -1
+    _addPullToRefreshPlugin: function (input) {
+        console.log(input);
+        var pullToRefresh = new phonepack.PullToRefresh(input, { type: 'snake' }, function () {
+            PostService.getFriendPosts(function () {
+                pullToRefresh.hide();
+            });
         });
+    },
 
+    _openComposeView: function () {
+        navigation.pushPage('views/compose.html', null, ComposeCtrl);
+    },
+
+    render: function () {
         return React.createElement(
-            "button",
-            { className: btnClass, onClick: this._likePost },
-            React.createElement("i", { className: "icon mdi mdi-heart-outline" })
+            "div",
+            null,
+            React.createElement(
+                "header",
+                { className: "header header--shadow", style: { height: '48px' } },
+                React.createElement(
+                    "div",
+                    { ref: this._addTabPlugin, className: "tab-bar bg-white tab-bar--text-black tab-bar--indicator-bottom-black", style: { top: 0, display: 'block' } },
+                    React.createElement(
+                        "div",
+                        { className: "tab-bar__item ripple active", style: { display: 'inline-block', padding: '0 15px' }, "data-tab": "#tabFriends" },
+                        React.createElement("i", { className: "icon mdi mdi-home" })
+                    ),
+                    React.createElement(
+                        "div",
+                        { className: "tab-bar__item ripple", id: "tabItemNotifications", style: { display: 'inline-block', padding: '0 15px' }, "data-tab": "#tabNotifications" },
+                        React.createElement("i", { className: "icon mdi mdi-bell-outline" }),
+                        React.createElement(
+                            "div",
+                            { className: "badge bg-red hide", id: "badgeNotification" },
+                            "0"
+                        )
+                    )
+                )
+            ),
+            React.createElement(
+                "section",
+                { className: "content has-header", style: { paddingTop: '48px' }, id: "tabFriends", ref: this._addPullToRefreshPlugin },
+                React.createElement(PostList, null)
+            ),
+            React.createElement(
+                "section",
+                { className: "content has-header", style: { paddingTop: '48px' }, id: "tabNotifications" },
+                React.createElement("ul", { className: "list", id: "listNotifications" })
+            ),
+            React.createElement(
+                "button",
+                { className: "button bg-blue text-white button--fab button--fab-floating", onClick: this._openComposeView },
+                React.createElement("i", { className: "icon mdi mdi-pencil" })
+            )
         );
     }
 });
 
-module.exports = LikeButton;
+module.exports = Home;
 
-},{"../services/post":183,"classnames":3,"react":162}],167:[function(require,module,exports){
+},{"../../controllers/compose":177,"../../services/post":184,"./PostList":168,"react":162}],167:[function(require,module,exports){
 var React = require("react");
 var PostService = require("../../services/post");
 var CommentsCtrl = require("../../controllers/comments");
@@ -20592,20 +20637,20 @@ var PostItem = React.createClass({
         post: React.PropTypes.object.isRequired
     },
 
-    _onChange: function (data) {
+    _onSocketChange: function (data) {
         PostActions.updateById(data);
     },
 
     componentDidMount: function () {
-        PostService.on('newLike_' + this.props.post._id, this._onChange);
-        PostService.on('dislike_' + this.props.post._id, this._onChange);
-        PostService.on('updateCommentCount_' + this.props.post._id, this._onChange);
+        PostService.on('newLike_' + this.props.post._id, this._onSocketChange);
+        PostService.on('dislike_' + this.props.post._id, this._onSocketChange);
+        PostService.on('updateCommentCount_' + this.props.post._id, this._onSocketChange);
     },
 
     componentWillUnmount: function () {
-        PostService.on('newLike_' + this.props.post._id, this._onChange);
-        PostService.on('dislike_' + this.props.post._id, this._onChange);
-        PostService.on('updateCommentCount_' + this.props.post._id, this._onChange);
+        PostService.on('newLike_' + this.props.post._id, this._onSocketChange);
+        PostService.on('dislike_' + this.props.post._id, this._onSocketChange);
+        PostService.on('updateCommentCount_' + this.props.post._id, this._onSocketChange);
     },
 
     render: function () {
@@ -20673,7 +20718,7 @@ var PostItem = React.createClass({
 
 module.exports = PostItem;
 
-},{"../../actions/PostActions":164,"../../controllers/comments":175,"../../services/post":183,"../LikeButton":166,"react":162}],168:[function(require,module,exports){
+},{"../../actions/PostActions":164,"../../controllers/comments":176,"../../services/post":184,"../LikeButton":169,"react":162}],168:[function(require,module,exports){
 var React = require("react");
 var PostService = require("../../services/post");
 var PostItem = require("./PostItem");
@@ -20701,17 +20746,8 @@ var PostList = React.createClass({
             title: 'Loading'
         }).show();
 
-        openFB.api({
-            path: '/me/friends',
-            success: (function (results) {
-                var friends = results.data.map(function (f) {
-                    return f.id;
-                }).concat(window.currentUser.facebook_id);
-
-                PostService.getFriendPosts(friends, function () {
-                    loading.hide();
-                });
-            }).bind(this)
+        PostService.getFriendPosts(function () {
+            loading.hide();
         });
     },
 
@@ -20722,7 +20758,7 @@ var PostList = React.createClass({
     render: function () {
 
         var items = this.state.posts.map(function (post, index) {
-            return React.createElement(PostItem, { key: index, post: post });
+            return React.createElement(PostItem, { key: post._id, post: post });
         });
 
         return React.createElement(
@@ -20741,7 +20777,45 @@ var PostList = React.createClass({
 
 module.exports = PostList;
 
-},{"../../services/post":183,"../../stores/PostStore":185,"./PostItem":167,"react":162}],169:[function(require,module,exports){
+},{"../../services/post":184,"../../stores/PostStore":186,"./PostItem":167,"react":162}],169:[function(require,module,exports){
+var React = require("react");
+var classNames = require('classnames');
+var PostService = require("../services/post");
+
+var LikeButton = React.createClass({
+    displayName: "LikeButton",
+
+    _likePost: function () {
+        var post = this.props.post;
+
+        if (post.likes.indexOf(currentUser.facebook_id) === -1) {
+            PostService.likePost(post);
+        } else {
+            PostService.dislikePost(post);
+        }
+    },
+    render: function () {
+        var post = this.props.post;
+
+        var btnClass = classNames({
+            'button': true,
+            'ripple': true,
+            'button--icon': true,
+            'like': true,
+            'text-red': post.likes.indexOf(currentUser.facebook_id) > -1
+        });
+
+        return React.createElement(
+            "button",
+            { className: btnClass, onClick: this._likePost },
+            React.createElement("i", { className: "icon mdi mdi-heart-outline" })
+        );
+    }
+});
+
+module.exports = LikeButton;
+
+},{"../services/post":184,"classnames":3,"react":162}],170:[function(require,module,exports){
 var React = require("react");
 var CommentService = require("../../services/comment");
 var CommentStore = require("../../stores/CommentStore");
@@ -20802,9 +20876,10 @@ var CommentBox = React.createClass({
 
 module.exports = CommentBox;
 
-},{"../../actions/CommentActions":163,"../../services/comment":182,"../../stores/CommentStore":184,"./CommentItem":170,"react":162}],170:[function(require,module,exports){
+},{"../../actions/CommentActions":163,"../../services/comment":183,"../../stores/CommentStore":185,"./CommentItem":171,"react":162}],171:[function(require,module,exports){
 var React = require("react");
 var classNames = require('classnames');
+var CommentService = require("../../services/comment");
 
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -20815,7 +20890,17 @@ var avatarsIcons = ['emoticon', 'emoticon-cool', 'emoticon-devil', 'emoticon-hap
 var avatarColors = ['bg-red', 'bg-pink', 'bg-purple', 'bg-deep-purple', 'bg-indigo', 'bg-blue', 'bg-light-blue', 'bg-cyan', 'bg-teal', 'bg-green', 'bg-light-green', 'bg-lime', 'bg-yellow'];
 
 var CommentItem = React.createClass({
-    displayName: 'CommentItem',
+    displayName: "CommentItem",
+
+    _likeComment: function () {
+        var comment = this.props.comment;
+
+        if (comment.likes.indexOf(currentUser.facebook_id) === -1) {
+            CommentService.like(this.props.comment);
+        } else {
+            CommentService.dislike(this.props.comment);
+        }
+    },
 
     render: function () {
         var comment = this.props.comment;
@@ -20837,28 +20922,35 @@ var CommentItem = React.createClass({
 
         var btnClass = classNames(classes);
 
+        var btnLike = classNames({
+            'button': true,
+            'ripple': true,
+            'button--icon': true,
+            'text-red': comment.likes.indexOf(currentUser.facebook_id) > -1
+        });
+
         return React.createElement(
-            'li',
-            { className: 'list__item' },
+            "li",
+            { className: "list__item" },
             React.createElement(
-                'div',
-                { className: 'list__primary' },
-                React.createElement('i', { className: btnClass })
+                "div",
+                { className: "list__primary" },
+                React.createElement("i", { className: btnClass })
             ),
             React.createElement(
-                'div',
-                { className: 'list__content' },
-                ' ',
+                "div",
+                { className: "list__content" },
+                " ",
                 comment.text,
-                ' '
+                " "
             ),
             React.createElement(
-                'div',
-                { className: 'list__secondary' },
+                "div",
+                { className: "list__secondary" },
                 React.createElement(
-                    'button',
-                    { className: 'button button--icon ripple' },
-                    React.createElement('i', { className: 'icon mdi mdi-heart-outline' })
+                    "button",
+                    { className: btnLike, onClick: this._likeComment },
+                    React.createElement("i", { className: "icon mdi mdi-heart-outline" })
                 )
             )
         );
@@ -20867,7 +20959,7 @@ var CommentItem = React.createClass({
 
 module.exports = CommentItem;
 
-},{"classnames":3,"react":162}],171:[function(require,module,exports){
+},{"../../services/comment":183,"classnames":3,"react":162}],172:[function(require,module,exports){
 var React = require("react");
 var PostService = require("../../services/post");
 var PostStore = require("../../stores/PostStore");
@@ -20883,7 +20975,6 @@ var PostBox = React.createClass({
     displayName: "PostBox",
 
     getInitialState: function () {
-        console.log(this.props);
         return getPostState.call(this);
     },
 
@@ -20983,7 +21074,7 @@ var PostBox = React.createClass({
 
 module.exports = PostBox;
 
-},{"../../services/post":183,"../../stores/PostStore":185,"../LikeButton":166,"react":162}],172:[function(require,module,exports){
+},{"../../services/post":184,"../../stores/PostStore":186,"../LikeButton":169,"react":162}],173:[function(require,module,exports){
 var React = require("react");
 var PostModel = require("../../models/post");
 var PostBox = require("./PostBox");
@@ -21004,14 +21095,15 @@ var PostDetail = React.createClass({
 
 module.exports = PostDetail;
 
-},{"../../models/post":181,"./CommentBox":169,"./PostBox":171,"react":162}],173:[function(require,module,exports){
+},{"../../models/post":182,"./CommentBox":170,"./PostBox":172,"react":162}],174:[function(require,module,exports){
 module.exports = {
     COMMENT_INITIAL: 'COMMENT_INITIAL',
     COMMENT_CREATE: 'COMMENT_CREATE',
-    COMMENT_DESTROY: 'COMMENT_DESTROY'
+    COMMENT_DESTROY: 'COMMENT_DESTROY',
+    COMMENT_LIKE: 'COMMENT_LIKE'
 };
 
-},{}],174:[function(require,module,exports){
+},{}],175:[function(require,module,exports){
 module.exports = {
     POST_INITIAL: 'POST_INITIAL',
     POST_CREATE: 'POST_CREATE',
@@ -21020,7 +21112,7 @@ module.exports = {
     POST_INCREMENT_COUNT_COMMENT: 'POST_INCREMENT_COUNT_COMMENT'
 };
 
-},{}],175:[function(require,module,exports){
+},{}],176:[function(require,module,exports){
 var PostDetailsTemplate = require("../templates/postDetails");
 var CommentTemplate = require("../templates/comment");
 var CommentService = require("../services/comment");
@@ -21082,7 +21174,7 @@ function CommentsCtrl(template) {
 
 module.exports = CommentsCtrl;
 
-},{"../components/PostDetail/PostDetail":172,"../services/comment":182,"../templates/comment":186,"../templates/postDetails":187,"react":162,"react-dom":6}],176:[function(require,module,exports){
+},{"../components/PostDetail/PostDetail":173,"../services/comment":183,"../templates/comment":187,"../templates/postDetails":188,"react":162,"react-dom":6}],177:[function(require,module,exports){
 var PostService = require("../services/post");
 
 function getLocation(cb) {
@@ -21187,67 +21279,22 @@ function ComposeCtrl(template) {
 
 module.exports = ComposeCtrl;
 
-},{"../services/post":183}],177:[function(require,module,exports){
+},{"../services/post":184}],178:[function(require,module,exports){
 /*global phonepack*/
 /*global navigation*/
 /*global openFB*/
 
-var ComposeCtrl = require("./compose");
 var React = require("react");
 var ReactDOM = require('react-dom');
-var PostList = require("../components/Post/PostList");
+var Home = require("../components/Home/Home");
 
 function HomeCtrl(template) {
-    template = $(template);
-    var $contentFriends = template.find('#tabFriends');
-    var $contentNotifications = template.find('#tabNotifications');
-    var $badge_notification = template.find('#badgeNotification');
-    var $tabBar = template.find('#tab');
-    var $tabItemNotifications = template.find('#tabItemNotifications');
-
-    var tabBar = new phonepack.TabBar($tabBar[0]);
-    template.on('click', '.compose', function (e) {
-        navigation.pushPage('views/compose.html', {}, ComposeCtrl);
-    });
-    /*var pullToRefresh = new phonepack.PullToRefresh(contentFriends[0], {
-        type: 'snake'
-    }, function() {
-        PostService.getFriendPosts(friends, function(posts) {
-            posts.forEach(function(post) {
-                PostTemplate(contentFriends, post, CommentsCtrl, false);
-            });
-            pullToRefresh.hide();
-        });
-    });
-    $tabItemNotifications.on('click', function() {
-        NotificationService.readAllNotifications(currentUser, function(err, notification) {
-            console.log(err, notification)
-            $badge_notification.html('0').addClass('hide');
-        });
-    });
-    PostService.on('newPost', function(post) {
-        PostTemplate(contentFriends, post, CommentsCtrl);
-    });
-    NotificationService.on('newNotification_' + currentUser.facebook_id, function(notification) {
-        NotificationService.getUnreadNotification(currentUser, function(data) {
-            $badge_notification.html(data.length).removeClass('hide');
-        });
-        getAllNotification();
-    });
-    getAllNotification();
-    NotificationService.getUnreadNotification(currentUser, function(data) {
-        if (data.length) {
-            $badge_notification.html(data.length).removeClass('hide');
-        }
-    });
-    */
-
-    ReactDOM.render(React.createElement(PostList, null), $contentFriends[0]);
+    ReactDOM.render(React.createElement(Home, null), template);
 }
 
 module.exports = HomeCtrl;
 
-},{"../components/Post/PostList":168,"./compose":176,"react":162,"react-dom":6}],178:[function(require,module,exports){
+},{"../components/Home/Home":166,"react":162,"react-dom":6}],179:[function(require,module,exports){
 /* global openFB*/
 
 var HomeCtrl = require("./home");
@@ -21280,7 +21327,7 @@ function LoginCtrl(template) {
 
 module.exports = LoginCtrl;
 
-},{"./home":177}],179:[function(require,module,exports){
+},{"./home":178}],180:[function(require,module,exports){
 var Dispatcher = require('./Dispatcher');
 var assign = require('object-assign');
 
@@ -21297,7 +21344,7 @@ var AppDispatcher = assign({}, Dispatcher.prototype, {
 
 module.exports = AppDispatcher;
 
-},{"./Dispatcher":180,"object-assign":5}],180:[function(require,module,exports){
+},{"./Dispatcher":181,"object-assign":5}],181:[function(require,module,exports){
 var Promise = require('es6-promise').Promise;
 var assign = require('object-assign');
 
@@ -21358,7 +21405,7 @@ Dispatcher.prototype = assign({}, Dispatcher.prototype, {
 
 module.exports = Dispatcher;
 
-},{"es6-promise":4,"object-assign":5}],181:[function(require,module,exports){
+},{"es6-promise":4,"object-assign":5}],182:[function(require,module,exports){
 var assign = require('object-assign');
 var EventEmitter = require('events').EventEmitter;
 
@@ -21393,7 +21440,7 @@ var Post = assign({}, EventEmitter.prototype, {
 
 module.exports = Post;
 
-},{"events":1,"object-assign":5}],182:[function(require,module,exports){
+},{"events":1,"object-assign":5}],183:[function(require,module,exports){
 var CommentActions = require("../actions/CommentActions");
 var PostActions = require("../actions/PostActions");
 
@@ -21417,6 +21464,30 @@ module.exports = {
         });
     },
 
+    like: function (comment, cb) {
+        var data = {
+            comment: comment,
+            user: currentUser
+        };
+
+        socket.emit('likeComment', data, function (err, comment) {
+            CommentActions.like(comment);
+            if (cb) cb();
+        });
+    },
+
+    dislike: function (comment, cb) {
+        var data = {
+            comment: comment,
+            user: currentUser
+        };
+
+        socket.emit('dislikeComment', data, function (err, comment) {
+            CommentActions.like(comment);
+            if (cb) cb();
+        });
+    },
+
     on: function (event, fn) {
         socket.on(event, fn);
     },
@@ -21426,7 +21497,7 @@ module.exports = {
     }
 };
 
-},{"../actions/CommentActions":163,"../actions/PostActions":164}],183:[function(require,module,exports){
+},{"../actions/CommentActions":163,"../actions/PostActions":164}],184:[function(require,module,exports){
 /*global socket*/
 
 var PostActions = require("../actions/PostActions");
@@ -21440,11 +21511,21 @@ module.exports = {
         });
     },
 
-    getFriendPosts: function (friends, cb) {
-        socket.emit('getFriendPosts', friends, function (err, posts) {
-            PostActions.initial(posts);
+    getFriendPosts: function (cb) {
+        openFB.api({
+            path: '/me/friends',
+            success: function (results) {
 
-            if (cb) cb();
+                var friends = results.data.map(function (f) {
+                    return f.id;
+                }).concat(window.currentUser.facebook_id);
+
+                socket.emit('getFriendPosts', friends, function (err, posts) {
+                    PostActions.initial(posts);
+
+                    if (cb) cb();
+                });
+            }
         });
     },
 
@@ -21479,7 +21560,7 @@ module.exports = {
     }
 };
 
-},{"../actions/PostActions":164}],184:[function(require,module,exports){
+},{"../actions/PostActions":164}],185:[function(require,module,exports){
 var AppDispatcher = require('../dispatcher/AppDispatcher');
 var CommentConstants = require('../constants/CommentConstants');
 var EventEmitter = require('events').EventEmitter;
@@ -21571,6 +21652,10 @@ var CommentStore = assign({}, EventEmitter.prototype, {
                 destroy(action.id);
                 CommentStore.emitChange();
                 break;
+
+            case CommentConstants.COMMENT_LIKE:
+                updateById(action.data);
+                CommentStore.emitChange();
         }
 
         return true;
@@ -21580,7 +21665,7 @@ var CommentStore = assign({}, EventEmitter.prototype, {
 
 module.exports = CommentStore;
 
-},{"../constants/CommentConstants":173,"../dispatcher/AppDispatcher":179,"events":1,"object-assign":5}],185:[function(require,module,exports){
+},{"../constants/CommentConstants":174,"../dispatcher/AppDispatcher":180,"events":1,"object-assign":5}],186:[function(require,module,exports){
 var AppDispatcher = require('../dispatcher/AppDispatcher');
 var PostConstants = require('../constants/PostConstants');
 var EventEmitter = require('events').EventEmitter;
@@ -21702,7 +21787,7 @@ var PostStore = assign({}, EventEmitter.prototype, {
 
 module.exports = PostStore;
 
-},{"../constants/PostConstants":174,"../dispatcher/AppDispatcher":179,"events":1,"object-assign":5}],186:[function(require,module,exports){
+},{"../constants/PostConstants":175,"../dispatcher/AppDispatcher":180,"events":1,"object-assign":5}],187:[function(require,module,exports){
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -21721,7 +21806,7 @@ function CommentTemplate(context, comment) {
 
 module.exports = CommentTemplate;
 
-},{}],187:[function(require,module,exports){
+},{}],188:[function(require,module,exports){
 var PostService = require("../services/post");
 
 function evalInContext(source, context) {
@@ -21833,5 +21918,5 @@ function PostDetailsTemplate(context, post, isPublic) {
 
 module.exports = PostDetailsTemplate;
 
-},{"../services/post":183}]},{},[165])(165)
+},{"../services/post":184}]},{},[165])(165)
 });

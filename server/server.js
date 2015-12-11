@@ -42,6 +42,7 @@ var Comment = mongoose.model('Comment', {
         ref: 'Post'
     },
     user: mongoose.Schema.Types.Mixed,
+    likes: [String],
     createdAt: {
         type: Date,
         default: Date.now
@@ -124,14 +125,16 @@ io.on('connection', function(socket) {
 
     socket.on('getFriendPosts', function(data, cb) {
         Post.find({
-            'user.facebook_id': {
-                $in: data
-            }
-        })
-        .sort({ _id: -1 })
-        .exec(function(err, data) {
-            cb(err, data);
-        });
+                'user.facebook_id': {
+                    $in: data
+                }
+            })
+            .sort({
+                _id: -1
+            })
+            .exec(function(err, data) {
+                cb(err, data);
+            });
     });
 
     socket.on('getAllPost', function(data, cb) {
@@ -187,7 +190,26 @@ io.on('connection', function(socket) {
             _post: data._id
         }).exec(function(err, comment) {
             cb(err, comment);
-        });
+        }); 
+    });
+
+    socket.on('likeComment', function(data, cb) {
+        Comment.findById(data.comment._id, function(err, comment) {
+            if (comment.likes === undefined) comment.likes = [];
+            comment.likes.push(data.user.facebook_id);
+            comment.save(function(err, comment) {
+                cb(err, comment);
+            });
+        })
+    });
+    
+    socket.on('dislikeComment', function(data, cb) {
+        Comment.findById(data.comment._id, function(err, comment) {
+            comment.likes.splice(comment.likes.indexOf(data.user.facebook_id), 1);
+            comment.save(function(err, comment) {
+                cb(err, comment);
+            });
+        })
     });
 
     socket.on('getUnreadNotification', function(data, cb) {

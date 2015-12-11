@@ -11,12 +11,24 @@ module.exports = {
         });
     },
 
-    getFriendPosts: function(friends, cb) {
-        socket.emit('getFriendPosts', friends, function(err, posts) {
-            PostActions.initial(posts);
-            
-            if (cb) cb();
+    getFriendPosts: function(cb) {
+        openFB.api({
+            path: '/me/friends',
+            success: function(results) {
+                
+                var friends = results.data.map(function(f) {
+                    return f.id;
+                }).concat(window.currentUser.facebook_id);
+
+                socket.emit('getFriendPosts', friends, function(err, posts) {
+                    PostActions.initial(posts);
+
+                    if (cb) cb();
+                });
+
+            }
         });
+
     },
 
     likePost: function(data, cb) {
@@ -25,7 +37,7 @@ module.exports = {
             facebook_id: currentUser.facebook_id
         }, function(err, post) {
             PostActions.updateById(post);
-            
+
             if (cb) cb(post);
         });
     },
@@ -36,7 +48,7 @@ module.exports = {
             facebook_id: currentUser.facebook_id
         }, function(err, post) {
             PostActions.updateById(post);
-            
+
             if (cb) cb(post);
         });
     },

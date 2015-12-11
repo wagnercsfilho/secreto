@@ -21,6 +21,30 @@ module.exports = {
         });
     },
 
+    like: function(comment, cb) {
+        var data = {
+            comment: comment,
+            user: currentUser
+        };
+
+        socket.emit('likeComment', data, function(err, comment) {
+            CommentActions.like(comment);
+            if (cb) cb();
+        });
+    },
+    
+    dislike: function(comment, cb) {
+        var data = {
+            comment: comment,
+            user: currentUser
+        };
+
+        socket.emit('dislikeComment', data, function(err, comment) {
+            CommentActions.like(comment);
+            if (cb) cb();
+        });
+    },
+
     on: function(event, fn) {
         socket.on(event, fn);
     },

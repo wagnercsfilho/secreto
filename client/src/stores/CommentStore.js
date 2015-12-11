@@ -89,6 +89,10 @@ var CommentStore = assign({}, EventEmitter.prototype, {
                 destroy(action.id);
                 CommentStore.emitChange();
                 break;
+                
+            case CommentConstants.COMMENT_LIKE:
+                updateById(action.data);
+                CommentStore.emitChange();
         }
 
         return true;

@@ -27,7 +27,7 @@ ul.quote-card li {
     justify-content: center;
     -webkit-align-items: center;
     align-items: center;
-    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 5px solid rgba(255, 255, 255, 0.1);
 }
 
 .quote-mini {

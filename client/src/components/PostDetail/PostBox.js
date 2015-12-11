@@ -12,7 +12,6 @@ var getPostState = function(posts) {
 var PostBox = React.createClass({
     
     getInitialState: function() {
-        console.log(this.props)
         return getPostState.call(this);
     },
     

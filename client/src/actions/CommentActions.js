@@ -39,6 +39,13 @@ var CommentActions = {
             actionType: CommentConstants.COMMENT_DESTROY,
             id: id
         });
+    },
+    
+    like: function(comment){
+        AppDispatcher.handleViewAction({
+           actionType: CommentConstants.COMMENT_LIKE,
+           data: comment
+        });
     }
     
 };
