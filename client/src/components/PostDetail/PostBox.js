@@ -1,30 +1,35 @@
 var React = require("react");
 var PostService = require("../../services/post");
-var PostModel = require("../../models/post");
+var PostStore = require("../../stores/PostStore");
 var LikeButton = require("../LikeButton");
 
+var getPostState = function(posts) {
+    return {
+        post: PostStore.getById(this.props.post._id)
+    };
+}
 
 var PostBox = React.createClass({
-    setPost: function() {
-        this.setState({
-            post: PostModel.getById(this.props.post._id)
-        });
-    },
+    
     getInitialState: function() {
-        return {
-            post: PostModel.getById(this.props.post._id)
-        }
+        console.log(this.props)
+        return getPostState.call(this);
     },
+    
     componentDidMount: function() {
-        PostModel.subscribe(this.setPost);
+        PostStore.addChangeListener(this._onChange);
     },
+    
     componentWillUnmount: function() {
-        PostModel.unsubscribe(this.setPost);
+        PostStore.removeChangeListener(this._onChange);
     },
+    
     _closePage: function() {
         navigation.closeCurrentPage();
     },
+    
     render: function() {
+        console.log(this.state);
         var post = this.state.post;
 
         return (
@@ -57,7 +62,12 @@ var PostBox = React.createClass({
             </li>
             </ul>
         );
+    },
+    
+    _onChange: function() {
+        this.setState(getPostState.call(this));
     }
+    
 });
 
 module.exports = PostBox;

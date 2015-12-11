@@ -68,7 +68,7 @@ io.on('connection', function(socket) {
     socket.on('createPost', function(data, cb) {
         Post.create(data, function(err, post) {
 
-            socket.emit('newPost', post);
+            socket.broadcast.emit('newPost', post);
 
             cb(err, post);
         });
@@ -182,7 +182,7 @@ io.on('connection', function(socket) {
         });
     })
 
-    socket.on('getPostComments', function(data, cb) {
+    socket.on('getCommentByPost', function(data, cb) {
         Comment.find({
             _post: data._id
         }).exec(function(err, comment) {

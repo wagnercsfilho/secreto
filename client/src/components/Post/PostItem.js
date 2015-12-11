@@ -2,24 +2,30 @@ var React = require("react");
 var PostService = require("../../services/post");
 var CommentsCtrl = require("../../controllers/comments");
 var LikeButton = require("../LikeButton");
-var PostModel = require("../../models/post");
+var PostActions = require("../../actions/PostActions");
 
 var PostItem = React.createClass({
+
+    propTypes: {
+        post: React.PropTypes.object.isRequired
+    },
+
+    _onChange: function(data) {
+        PostActions.updateById(data);
+    },
+
     componentDidMount: function() {
-        PostService.on('newLike_' + this.props.post._id, function(data) {
-            PostModel.updateById(data);
-        });
-        PostService.on('dislike_' + this.props.post._id, function(data) {
-            PostModel.updateById(data);
-        });
-        PostService.on('updateCommentCount_' + this.props.post._id, function(data) {
-            console.log(data)
-            PostModel.updateById(data);
-        });
+        PostService.on('newLike_' + this.props.post._id, this._onChange);
+        PostService.on('dislike_' + this.props.post._id, this._onChange);
+        PostService.on('updateCommentCount_' + this.props.post._id, this._onChange);
     },
-    _openPageComments: function(e) {
-        navigation.pushPage('/views/comments.html', this.props.post, CommentsCtrl);
+
+    componentWillUnmount: function() {
+        PostService.on('newLike_' + this.props.post._id, this._onChange);
+        PostService.on('dislike_' + this.props.post._id, this._onChange);
+        PostService.on('updateCommentCount_' + this.props.post._id, this._onChange);
     },
+
     render: function() {
         var post = this.props.post;
 
@@ -43,7 +49,12 @@ var PostItem = React.createClass({
                 </div> 
             </li>
         );
+    },
+
+    _openPageComments: function(e) {
+        navigation.pushPage('/views/comments.html', this.props.post, CommentsCtrl);
     }
+
 });
 
 module.exports = PostItem;

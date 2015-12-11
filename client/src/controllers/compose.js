@@ -1,3 +1,5 @@
+var PostService = require("../services/post");
+
 function getLocation(cb) {
     function displayLocation(latitude, longitude, cb) {
         var request = new XMLHttpRequest();
@@ -11,7 +13,7 @@ function getLocation(cb) {
             if (request.readyState == 4 && request.status == 200) {
                 var data = JSON.parse(request.responseText);
                 if (data.results[0]) {
-                    var add = data.results[data.results.length-3].formatted_address;
+                    var add = data.results[data.results.length - 3].formatted_address;
                     console.log(add)
                     var value = add.split(",");
 
@@ -65,8 +67,8 @@ function ComposeCtrl(template) {
 
     var text = $(template).find('textarea');
     var postTexture = $(template).find('.postTexture');
-    var blockquote = $(template).find('blockquote');
-    
+    var blockquote = $(template).find('ul li');
+
     var textures = ['white', 'blue', 'red', 'gray', 'green', 'black', 'pink', 'purple', 'orange', 'teal'];
     var textureIndex = 0;
 
@@ -75,12 +77,12 @@ function ComposeCtrl(template) {
 
     postTexture.on('click', function(e) {
         var bg = $(this);
-        
+
         if (textureIndex === textures.length - 1) textureIndex = -1;
         textureIndex++;
-        
+
         blockquote.removeClass();
-        blockquote.addClass('quote-card ' + textures[textureIndex]);
+        blockquote.addClass(textures[textureIndex]);
 
         data.quotebg = textures[textureIndex];
     });
@@ -89,10 +91,10 @@ function ComposeCtrl(template) {
         getLocation(function(location) {
             data.text = text.val();
             data.location = location;
-            socket.emit('createPost', data, function() {
+
+            PostService.create(data, function() {
                 var notification = new phonepack.Notification();
                 notification.success('Successfully');
-
                 navigation.closeCurrentPage();
             });
         });

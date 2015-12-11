@@ -1,17 +1,21 @@
 /*global socket*/
-var PostModel = require("../models/post");
+
+var PostActions = require("../actions/PostActions");
 
 module.exports = {
-    getAllPost: function(friends, cb) {
-        socket.emit('getAllPost', friends, function(err, posts) {
-            cb(posts);
+
+    create: function(data, cb) {
+        socket.emit('createPost', data, function(err, post) {
+            PostActions.create(post);
+            if (cb) cb();
         });
     },
 
     getFriendPosts: function(friends, cb) {
         socket.emit('getFriendPosts', friends, function(err, posts) {
-            PostModel.set(posts);
-            if (cb) cb(posts);
+            PostActions.initial(posts);
+            
+            if (cb) cb();
         });
     },
 
@@ -20,7 +24,8 @@ module.exports = {
             post: data,
             facebook_id: currentUser.facebook_id
         }, function(err, post) {
-            PostModel.updateById(post);
+            PostActions.updateById(post);
+            
             if (cb) cb(post);
         });
     },
@@ -30,7 +35,8 @@ module.exports = {
             post: data,
             facebook_id: currentUser.facebook_id
         }, function(err, post) {
-            PostModel.updateById(post);
+            PostActions.updateById(post);
+            
             if (cb) cb(post);
         });
     },
@@ -38,8 +44,8 @@ module.exports = {
     on: function(event, fn) {
         socket.on(event, fn);
     },
-    
-    removeListener: function(event, fn){
+
+    removeListener: function(event, fn) {
         socket.removeListener(event, fn);
     }
 }

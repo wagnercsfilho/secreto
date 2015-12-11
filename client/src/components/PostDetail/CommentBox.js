@@ -1,33 +1,41 @@
 var React = require("react");
 var CommentService = require("../../services/comment");
-var CommentModel = require("../../models/comment");
+var CommentStore = require("../../stores/CommentStore");
+var CommentActions = require("../../actions/CommentActions");
 var CommentItem = require("./CommentItem");
 
-var addComment = function(comment) {
-    CommentModel.add(comment);
+function getCommentState() {
+    return {
+        comments: CommentStore.getAll(this.props.post._id)
+    }
 }
 
 var CommentBox = React.createClass({
-    setComments: function() {
-        this.setState({
-            comments: CommentModel.all()
-        });
-    },
-    getInitialState: function() {
-        return {
-            comments: CommentModel.all()
-        }
-    },
-    componentDidMount: function() {
-        CommentModel.subscribe(this.setComments);
-        CommentService.getPostComments(this.props.post);
 
-        CommentService.on('newComment_' + this.props.post._id, addComment);
+    getInitialState: function() {
+        return getCommentState.call(this);
     },
+
+    _onChange: function() {
+        this.setState(getCommentState.call(this));
+    },
+
+    _onSocketChange: function(data) {
+        CommentActions.create(data);
+    },
+
+    componentDidMount: function() {
+        CommentStore.addChangeListener(this._onChange);
+        CommentService.getCommentByPost(this.props.post);
+
+        CommentService.on('newComment_' + this.props.post._id, this._onSocketChange);
+    },
+
     componentWillUnmount: function() {
-        CommentModel.unsubscribe(this.setComments);
-        CommentService.removeListener('newComment_' + this.props.post._id, addComment);
+        CommentStore.removeChangeListener(this._onChange);
+        CommentService.removeListener('newComment_' + this.props.post._id, this._onSocketChange);
     },
+
     render: function() {
         var comments = this.state.comments.map(function(comment, index) {
             return <CommentItem key={index} comment={comment} />
@@ -38,6 +46,7 @@ var CommentBox = React.createClass({
                     {comments}
                 </ul>);
     }
+
 });
 
 module.exports = CommentBox;

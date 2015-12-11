@@ -8,7 +8,6 @@ var PostDetail = require("../components/PostDetail/PostDetail");
 
 function CommentsCtrl(template) {
     var post = navigation.params;
-
     template = $(template);
     var $content = template.find('.content');
     navigation.on('onClose', function() {
@@ -18,7 +17,7 @@ function CommentsCtrl(template) {
 
     var elCreateComment = template.find('#createComment');
     elCreateComment.on('click', function(e) {
-        CommentService.createComment({
+        CommentService.create({
             post: post,
             text: template.find('input').val(),
             user: window.currentUser

@@ -1,24 +1,29 @@
 var React = require("react");
 var PostService = require("../../services/post");
 var PostItem = require("./PostItem");
-var PostModel = require("../../models/post");
+var PostStore = require("../../stores/PostStore");
 
-var initialState = function(posts) {
-    this.setState({
-        posts: PostModel.all()
-    });
+var getPostState = function(posts) {
+    return {
+        posts: PostStore.getAll()
+    };
 }
 
 var PostList = React.createClass({
-    getInitialState: function() {
-        return {
-            posts: PostModel.all()
-        }
-    },
-    componentDidMount: function() {
-        //var loading = new phonepack.Loading();
-        PostModel.subscribe(initialState.bind(this));
 
+    getInitialState: function() {
+        return getPostState();
+    },
+
+    componentDidMount: function() {
+        PostStore.addChangeListener(this._onChange);
+
+        var loading = new phonepack.Loading({
+            spinner: true,
+            overlay: true,
+            title: 'Loading'
+        }).show();
+        
         openFB.api({
             path: '/me/friends',
             success: function(results) {
@@ -26,20 +31,29 @@ var PostList = React.createClass({
                     return f.id;
                 }).concat(window.currentUser.facebook_id);
 
-                PostService.getFriendPosts(friends);
+                PostService.getFriendPosts(friends, function(){
+                    loading.hide();
+                });
 
             }.bind(this)
         });
     },
+
     componentWillUnmount: function() {
-        PostModel.unsubscribe(initialState.bind(this));
+        PostStore.removeChangeListener(this._onChange);
     },
+
     render: function() {
+
         var items = this.state.posts.map(function(post, index) {
             return <PostItem key={index} post={post} />
-        }.bind(this));
+        });
 
         return <ul className="quote-card"> {items} </ul>;
+    },
+
+    _onChange: function() {
+        this.setState(getPostState());
     }
 });
 
