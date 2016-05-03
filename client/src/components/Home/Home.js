@@ -14,7 +14,6 @@ var Home = React.createClass({
     },
     
     _addPullToRefreshPlugin: function(input){
-        console.log(input)
         var pullToRefresh = new phonepack.PullToRefresh(input, { type: 'snake' }, function(){
             PostService.getFriendPosts(function(){
                 pullToRefresh.hide();
@@ -40,7 +39,7 @@ var Home = React.createClass({
                         </div>
                     </div>
                 </header> 
-                <section className="content has-header" style={ {paddingTop: '48px'} } id="tabFriends" ref={this._addPullToRefreshPlugin}>
+                <section className="content has-header" style={ {paddingTop: '48px'} } id="tabFriends" ref={this.__addPullToRefreshPlugin}>
                     <PostList />
                 </section> 
                 <section className="content has-header" style={ {paddingTop: '48px'} } id = "tabNotifications">

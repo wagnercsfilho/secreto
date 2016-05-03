@@ -15,17 +15,21 @@ app.use(express.static(path.normalize(__dirname + '/../client')));
 mongoose.connect('mongodb://localhost/secreto');
 
 var User = mongoose.model('User', {
-    friends: [{
-        ref: 'User',
-        type: mongoose.Schema.Types.ObjectId
-    }]
+    name: String,
+    facebook_id: String
 });
 var Post = mongoose.model('Post', {
     text: String,
     quotebg: String,
-    user: mongoose.Schema.Types.Mixed,
+    _user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
     location: mongoose.Schema.Types.Mixed,
-    likes: [String],
+    likes: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }],
     comments: {
         type: Number,
         default: 0
@@ -41,8 +45,14 @@ var Comment = mongoose.model('Comment', {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Post'
     },
-    user: mongoose.Schema.Types.Mixed,
-    likes: [String],
+    _user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
+    likes: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }],
     createdAt: {
         type: Date,
         default: Date.now
@@ -54,7 +64,10 @@ var Notification = mongoose.model('Notification', {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Post'
     },
-    user: mongoose.Schema.Types.Mixed,
+    _user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
     createdAt: {
         type: Date,
         default: Date.now
@@ -66,38 +79,60 @@ var Notification = mongoose.model('Notification', {
 });
 
 io.on('connection', function(socket) {
+    socket.on('createUpdateUser', function(data, cb) {
+        User.update({
+            facebook_id: data.facebook_id
+        }, data, {
+            new: true,
+            upsert: true,
+            setDefaultsOnInsert: true
+        }, () => {
+            User.findOne({
+                facebook_id: data.facebook_id
+            }, (err, user) => {
+                cb(user);
+            })
+        });
+    });
+    socket.on('getPosts', function(data, cb) {
+        User.find({
+            facebook_id: {
+                $in: data
+            }
+        }).exec(function(err, users) {
+            Post.find({
+                    '_user': {
+                        $in: users
+                    }
+                })
+                .populate('_user')
+                .sort({
+                    _id: -1
+                })
+                .exec(function(err, data) {
+                    cb(err, data);
+                });
+        })
+    });
     socket.on('createPost', function(data, cb) {
         Post.create(data, function(err, post) {
-
-            socket.broadcast.emit('newPost', post);
-
             cb(err, post);
         });
     });
-
     socket.on('likePost', function(data, cb) {
         Post.findById(data.post._id, function(err, post) {
-
-            if (post.likes === undefined) post.likes = [];
-            post.likes.push(data.facebook_id);
-
+            post.likes.push(data._user);
             post.save(function(err, post) {
-                socket.broadcast.emit('newLike_' + post._id, post);
 
-                if (data.facebook_id !== post.user.facebook_id) {
-                    Notification.remove({
-                        '_post': post._id
-                    }, function(err) {
-                        Notification.create({
-                            type: 'LIKE',
-                            user: post.user,
-                            _post: post._id,
-                            read: false
-                        }, function(err, notification) {
-                            io.sockets.emit('newNotification_' + post.user.facebook_id, notification);
-
-                            cb(err, post);
-                        });
+                if (data._user !== post._user) {
+                    Notification.create({
+                        type: 'LIKE',
+                        _user: post._user,
+                        _post: post._id,
+                        read: false
+                    }, function(err, notification) {
+                        socket.broadcast.emit('newNotification/' + post._user, notification);
+                        cb(err, post);
                     });
                 }
                 else {
@@ -106,72 +141,34 @@ io.on('connection', function(socket) {
 
             });
 
-
-
         });
     });
-
     socket.on('dislikePost', function(data, cb) {
         Post.findById(data.post._id, function(err, post) {
 
-            post.likes.splice(post.likes.indexOf(data.facebook_id), 1);
+            post.likes.splice(post.likes.indexOf(data._user), 1);
             post.save(function(err, data) {
-                socket.broadcast.emit('dislike_' + data._id, data);
                 cb(err, data);
             });
 
         });
     });
-
-    socket.on('getFriendPosts', function(data, cb) {
-        Post.find({
-                'user.facebook_id': {
-                    $in: data
-                }
-            })
-            .sort({
-                _id: -1
-            })
-            .exec(function(err, data) {
-                cb(err, data);
-            });
-    });
-
-    socket.on('getAllPost', function(data, cb) {
-        Post.find({
-            'user.facebook_id': {
-                $nin: data
-            }
-        }).exec(function(err, data) {
-            cb(err, data);
-        });
-    });
-
     socket.on('createComment', function(data, cb) {
         Comment.create(data, function(err, comment) {
             Post.findById(data._post, function(err, post) {
-                if (post.comments === undefined) post.comments = 0;
                 post.comments += 1;
                 post.save(function(err, post) {
-                    socket.broadcast.emit('newComment_' + post._id, comment);
-                    socket.broadcast.emit('updateCommentCount_' + post._id, post);
 
-                    if (data.user.facebook_id !== post.user.facebook_id) {
-                        Notification.remove({
-                            '_post': post._id
-                        }, function(err) {
-                            Notification.create({
-                                type: 'COMMENT',
-                                user: post.user,
-                                _post: post._id,
-                                read: false
-                            }, function(err, notification) {
-                                socket.broadcast.emit('newNotification_' + post.user.facebook_id, notification);
-
-                                cb(err, comment);
-                            });
+                    if (data.user !== post._user) {
+                        Notification.create({
+                            type: 'COMMENT',
+                            _user: post._user,
+                            _post: post._id,
+                            read: false
+                        }, function(err, notification) {
+                            socket.broadcast.emit('newNotification/' + post._user, notification);
+                            cb(err, comment);
                         });
-
                     }
                     else {
                         cb(err, comment);
@@ -179,63 +176,34 @@ io.on('connection', function(socket) {
 
                 });
 
-
             });
 
         });
     })
-
-    socket.on('getCommentByPost', function(data, cb) {
+    socket.on('getCommentByPost', function(post, cb) {
         Comment.find({
-            _post: data._id
+            _post: post._id
         }).exec(function(err, comment) {
             cb(err, comment);
-        }); 
+        });
     });
-
-    socket.on('likeComment', function(data, cb) {
-        Comment.findById(data.comment._id, function(err, comment) {
-            if (comment.likes === undefined) comment.likes = [];
-            comment.likes.push(data.user.facebook_id);
-            comment.save(function(err, comment) {
-                cb(err, comment);
-            });
-        })
-    });
-    
-    socket.on('dislikeComment', function(data, cb) {
-        Comment.findById(data.comment._id, function(err, comment) {
-            comment.likes.splice(comment.likes.indexOf(data.user.facebook_id), 1);
-            comment.save(function(err, comment) {
-                cb(err, comment);
-            });
-        })
-    });
-
-    socket.on('getUnreadNotification', function(data, cb) {
+    socket.on('getNotifications', function(userId, cb) {
         Notification.find({
-                'user.facebook_id': data.facebook_id,
+                '_user': userId,
                 read: false
             })
-            .populate('_post')
-            .exec(function(err, notification) {
-                cb(err, notification);
-            });
-    });
-
-    socket.on('getAllNotification', function(data, cb) {
-        Notification.find({
-                'user.facebook_id': data.facebook_id,
+            .sort({
+                _id: -1
             })
             .populate('_post')
-            .exec(function(err, notification) {
-                cb(err, notification);
+            .exec(function(err, notifications) {
+                console.log(err, notifications)
+                cb(err, notifications);
             });
     });
-
-    socket.on('readAllNotifications', function(data, cb) {
+    socket.on('readNotifications', function(userId, cb) {
         Notification.update({
-                'user.facebook_id': data.facebook_id,
+                '_user': userId,
                 read: false
             }, {
                 $set: {
