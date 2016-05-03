@@ -22557,7 +22557,7 @@
 	        value: function openCommentsPage(e) {
 	            _phonepack.Navigation.push('mainNav', 'Comments', {
 	                post: this.props.post
-	            });
+	            }, 'pages--slide-up');
 	        }
 	    }, {
 	        key: 'likePost',
@@ -22831,31 +22831,51 @@
 	    }, {
 	        key: "takePic",
 	        value: function takePic() {
-	            navigator.camera.getPicture(onSuccess, onFail, {
+	            var _this2 = this;
+
+	            navigator.camera.getPicture(function (imageURI) {
+	                console.log(imageURI);
+	                _this2.refs.postTexture.style.backgroundColor = '#000';
+	                _this2.refs.postTexture.style.backgroundImage = 'url(' + imageURI + ')';
+	            }, function (message) {
+	                alert('Failed because: ' + message);
+	            }, {
 	                quality: 50,
+	                targetWidth: 500,
+	                targetHeight: 500,
+	                encodingType: Camera.EncodingType.JPEG,
+	                correctOrientation: true,
 	                destinationType: Camera.DestinationType.FILE_URI
 	            });
+	        }
+	    }, {
+	        key: "takePicGallery",
+	        value: function takePicGallery() {
+	            var _this3 = this;
 
-	            function onSuccess(imageURI) {
-	                alert(imageURI);
-	                this.refs.postTexture.style.backgroundImage = 'url(' + imageURI + ')';
-	            }
-
-	            function onFail(message) {
+	            navigator.camera.getPicture(function (imageURI) {
+	                console.log(imageURI);
+	                _this3.refs.postTexture.style.backgroundColor = '#000';
+	                _this3.refs.postTexture.style.backgroundImage = 'url(' + imageURI + ')';
+	            }, function (message) {
 	                alert('Failed because: ' + message);
-	            }
+	            }, {
+	                quality: 50,
+	                sourceType: Camera.PictureSourceType.PHOTOLIBRARY,
+	                destinationType: Camera.DestinationType.FILE_URI
+	            });
 	        }
 	    }, {
 	        key: "savePost",
 	        value: function savePost(e) {
-	            var _this2 = this;
+	            var _this4 = this;
 
 	            this.post.text = this.state.textCompose;
 
 	            this.dispatch(_actions2.default.createPost(this.post, function () {
 	                var notification = new phonepack.Notification();
 	                notification.success('Seu segredo foi criado com sucesso!');
-	                _this2.closeCurrentPage('mainNav');
+	                _this4.closeCurrentPage('mainNav');
 	            }));
 	        }
 	    }, {
@@ -22874,8 +22894,6 @@
 	    }, {
 	        key: "render",
 	        value: function render() {
-
-	            console.log(this.state);
 
 	            var cls = (0, _classnames2.default)({
 	                button: true,
@@ -22939,8 +22957,13 @@
 	                        { className: "footer__buttons" },
 	                        _react2.default.createElement(
 	                            "button",
-	                            { className: "button button--icon ripple text-grey" },
+	                            { className: "button button--icon ripple text-grey", onClick: this.takePic.bind(this) },
 	                            _react2.default.createElement("i", { className: "icon mdi mdi-camera" })
+	                        ),
+	                        _react2.default.createElement(
+	                            "button",
+	                            { className: "button button--icon ripple text-grey", onClick: this.takePicGallery.bind(this) },
+	                            _react2.default.createElement("i", { className: "icon mdi mdi-folder-image" })
 	                        )
 	                    ),
 	                    _react2.default.createElement(
