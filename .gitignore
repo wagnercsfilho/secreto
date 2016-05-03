@@ -2,6 +2,7 @@ client/node_modules
 client/bower_components
 server/node_modules
 node_modules
+data
 
 # Mac
 .DS_Store
