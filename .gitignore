@@ -1,5 +1,37 @@
 client/node_modules
 client/bower_components
 server/node_modules
-phonegap
 node_modules
+
+# Mac
+.DS_Store
+
+# iOS
+secreto/platforms/ios/build/
+secreto/platforms/ios/www/
+secreto/platforms/ios/cordova/console.log
+*.xcuserdatad
+
+# android
+secreto/platforms/android/assets/www
+secreto/platforms/android/bin
+secreto/platforms/android/gen
+secreto/platforms/android/local.properties
+secreto/platforms/android/ant-build
+secreto/platforms/android/ant-gen
+secreto/platforms/android/CordovaLib/ant-build
+secreto/platforms/android/CordovaLib/ant-gen
+secreto/platforms/android/CordovaLib/bin
+secreto/platforms/android/CordovaLib/gen
+secreto/platforms/android/CordovaLib/local.properties
+
+# wp8
+secreto/platforms/wp8/bin
+secreto/platforms/wp8/obj
+secreto/platforms/wp8/www
+secreto/platforms/wp8/.staging
+secreto/platforms/wp8/*.suo
+secreto/platforms/wp8/*.csproj.user
+
+# res
+secreto/resources/signing

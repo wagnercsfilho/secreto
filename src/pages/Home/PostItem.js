@@ -8,10 +8,10 @@ class PostItem extends Container {
 
     openCommentsPage(e) {
         Navigation.push('mainNav', 'Comments', {
-            post: this.props.post 
-        });
+            post: this.props.post
+        }, 'pages--slide-up');
     }
-    
+
     likePost() {
         this.dispatch(actions.likePost(this.props.post, () => {} ));
     }
@@ -27,25 +27,25 @@ class PostItem extends Container {
         });
 
         return (
-            <li className={post.quotebg}> 
-                <p>   {post.text}   </p> 
-                <div className="quote_bottom"> 
-                    <div className="row"> 
-                        <div className="cell"> 
+            <li className={post.quotebg}>
+                <p>   {post.text}   </p>
+                <div className="quote_bottom">
+                    <div className="row">
+                        <div className="cell">
                             <button className={btnClass} onClick={this.likePost.bind(this)}>
-                                <i className="icon mdi mdi-heart-outline"></i> 
+                                <i className="icon mdi mdi-heart-outline"></i>
                            </button>
-                            <span>  {post.likes.length}  </span>   
+                            <span>  {post.likes.length}  </span>
                             <button className="button ripple button--icon comment" onClick={this.openCommentsPage.bind(this)}>
-                                <i className="icon mdi mdi-comment-outline"></i> 
-                            </button> 
-                            <span>  {post.comments}  </span>  
-                        </div> 
-                        <div className="cell"> 
-                            <cite> Amigo </cite> 
-                        </div> 
+                                <i className="icon mdi mdi-comment-outline"></i>
+                            </button>
+                            <span>  {post.comments}  </span>
+                        </div>
+                        <div className="cell">
+                            <cite> Amigo </cite>
+                        </div>
                     </div>
-                </div> 
+                </div>
             </li>
         );
     }
