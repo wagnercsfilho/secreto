@@ -18,6 +18,7 @@
   "homepage": "https://github.com/wagnercsfilho/secreto#readme",
   "dependencies": {
     "classnames": "^2.2.4",
+    "js-base64": "^2.1.9",
     "react": "^15.0.1",
     "react-dom": "^15.0.1",
     "redux": "^3.5.2",

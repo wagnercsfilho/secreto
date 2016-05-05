@@ -1,8 +1,8 @@
 import React from "react"
-import Container from '../../redux/Container'
+import Container from '../../../redux/Container'
 import classNames from 'classnames'
-import { Navigation } from '../../phonepack'
-import actions from "../../redux/actions"
+import { Navigation } from '../../../phonepack'
+import actions from "../../../redux/actions"
 
 class PostItem extends Container {
 
@@ -25,9 +25,15 @@ class PostItem extends Container {
             'like': true,
             'text-red': post.likes.indexOf(window.currentUser._id) > -1
         });
-
+        
+        let style = {};
+        if (post.imageBackground) {
+            style.backgroundImage = "url('"+ post.imageBackground + "')";
+        }
+        
         return (
-            <li className={post.quotebg}>
+            <li className={post.quotebg} style={style}>
+                <div className="image-overlay"></div>
                 <p>   {post.text}   </p>
                 <div className="quote_bottom">
                     <div className="row">

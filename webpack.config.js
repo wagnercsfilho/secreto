@@ -4,7 +4,7 @@ var webpack = require('webpack');
 module.exports = {
     entry: './src/main.js',
     output: {
-        path: path.resolve('./secreto/www/dist/js/'),
+        path: path.resolve('./client/dist/js/'),
         filename: 'bundle.js',
         publicPath: '/'
     },

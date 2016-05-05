@@ -35,13 +35,14 @@ class Content extends React.Component {
 
     render() {
         
-        let { className, contentPadding, hasHeader, hasFooter , headerShadow, ...other } = this.props;
+        let { className, contentPadding, hasSubHeader, hasHeader, hasFooter , headerShadow, ...other } = this.props;
         
         let cls = classnames('content', className, {
             'content-padding': contentPadding,
             'has-header': hasHeader,
             'has-footer': hasFooter,
-            'header-shadow': headerShadow
+            'header-shadow': headerShadow,
+            'has-sub-header': hasSubHeader
         });
         
         return (

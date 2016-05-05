@@ -1,6 +1,6 @@
 import React from "react"
 import CommentItem from "./CommentItem"
-import Container from '../../redux/Container'
+import Container from '../../../redux/Container'
 
 class CommentBox extends Container {
     

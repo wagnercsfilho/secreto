@@ -1,10 +1,3 @@
-@import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,700);
-body {
-    background: #eee;
-    font-family: 'Source Sans Pro', sans-serif;
-    font-weight: 300;
-}
-
 ul.quote-card{
     margin: 0;
     padding: 0;
@@ -31,6 +24,16 @@ ul.quote-card li {
     -webkit-align-items: center;
     align-items: center;
     border-bottom: 5px solid rgba(255, 255, 255, 0.1);
+}
+
+ul.quote-card li .image-overlay{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.1);
+    z-index: 0;
 }
 
 .quote-mini {
@@ -63,30 +66,18 @@ ul.quote-card li p {
     line-height: 1.5;
     margin: 0;
     width: 100%;
-    font-family: 'Source Sans Pro', sans-serif;
     font-weight: 700;
     word-wrap: break-word;
     padding: 25% 0px;
     color: #ffffff;
+    z-index: 1;
     text-shadow: 2px 0 0 #000, -2px 0 0 #000, 0 2px 0 #000, 0 -2px 0 #000, 1px 1px #000, -1px -1px 0 #101010, 1px -1px 0 #040404, -1px 1px 0 #000;
-}
-
-.quote-mini p{
-    height: 100%;
-    font-size: 12px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    justify-content: center;
-    align-items: center;
-    display: flex;
 }
 ul.quote-card li cite {
     font-size: 16px;
     margin-top: 10px;
     display: block;
     font-weight: 200;
-    opacity: 0.8;
     text-align: right;
     font-style: normal;
 }
@@ -96,13 +87,14 @@ ul.quote-card li .quote_bottom {
     bottom: 5px;
     left: 5px;
     right: 15px;
+    color: #fff;
+    z-index: 1;
 }
 
 ul.quote-card li .quote_bottom span {
     display: inline-block;
     line-height: 40px;
     font-size: 14px;
-    opacity: 0.8;
 }
 
 ul.quote-card li .quote_bottom .button .icon{
@@ -114,72 +106,31 @@ ul.quote-card li  .quote_top {
     top: 5px;
     left: 5px;
     right: 5px;
-}
-
-.quote-card li.red{
-    background-image: url('../textures/snow.png');
-    background-color: #c0392b;
     color: #ffffff;
 }
 
-.quote-card li.pink{
-    background-image: url('../textures/xv.png');
-    background-color: #E08283;
-    color: #ffffff;
+.txt-concrete {
+    background-image: url('../textures/concrete_seamless.png');
 }
 
-.quote-card li.black{
-    background-image: url('../textures/snow.png');
-    background-color: #000000;
-    color: #ffffff;
+.txt-lodyas{
+    background-image: url('../textures/footer_lodyas.png');
+} 
+
+.txt-ignasi{
+    background-image: url('../textures/ignasi_pattern_s.png');
 }
 
-.quote-card li.white{
-    background-image: url('../textures/white_wall_hash.png');
-    background-color: #ffffff;
-    color: #000;
+.txt-restaurant{
+    background-image: url('../textures/restaurant.png');
 }
 
-.quote-card li.teal{
-    background-image: url('../textures/egg-shell.png');
-    background-color: #16a085;
-    color: #ffffff;
+.txt-school{
+    background-image: url('../textures/school.png');
 }
 
-.quote-card li.purple{
-    background-image: url('../textures/snow.png');
-    background-color: #9b50ba;
-    color: #ffffff;
-}
-
-.quote-card li.blue{
-    background-image: url('../textures/snow.png');
-    background-color: #446CB3;
-    color: #ffffff;
-}
-
-.quote-card li.blue2{
-    background-image: url('../textures/type.png');
-    background-color: #446CB3;
-    color: #ffffff;
-}
-
-.quote-card li.orange{
-    background-image: url('../textures/light-paper-fibers.png');
-    background-color: #F39C12;
-    color: #ffffff;
-}
-
-.quote-card li.gray{
-    background-image: url('../textures/snow.png');
-    background-color: #6C7A89;
-    color: #ffffff;
-}
-
-.quote-card li.green{
-    background-image: url('../textures/white-wall-3-2.png');
-    background-color: #27ae60;
-    color: #ffffff;
+.txt-weather{
+    background-image: url('../textures/weather.png');
 }
 
 .compose-textarea {
@@ -198,7 +149,27 @@ ul.quote-card li  .quote_top {
     font-weight: 700;
     color: #ffffff;
     text-shadow: 2px 0 0 #000, -2px 0 0 #000, 0 2px 0 #000, 0 -2px 0 #000, 1px 1px #000, -1px -1px 0 #101010, 1px -1px 0 #040404, -1px 1px 0 #000;
+}
 
+.compose-textarea::-webkit-input-placeholder {
+   text-shadow: none;
+   font-weight: 300;
+   color: #ffffff;
+}
+.compose-textarea:-moz-placeholder { /* Firefox 18- */
+   text-shadow: none;
+   font-weight: 300;
+   color: #ffffff;
+}
+.compose-textarea::-moz-placeholder {  /* Firefox 19+ */
+   text-shadow: none;
+   font-weight: 300;
+   color: #ffffff;
+}
+.compose-textarea:-ms-input-placeholder {  
+   text-shadow: none;
+   font-weight: 300;
+   color: #ffffff;
 }
 
 .avatarUserQuote {

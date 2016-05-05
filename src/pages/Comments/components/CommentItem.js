@@ -1,7 +1,7 @@
 import React from "react";
 import classNames from 'classnames';
-import Container from '../../redux/Container'
-import actions from "../../redux/actions"
+import Container from '../../../redux/Container'
+import actions from "../../../redux/actions"
 
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;

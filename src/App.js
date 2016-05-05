@@ -3,6 +3,7 @@ import Container from './redux/Container'
 import { Navigation, Pages } from './phonepack'
 import Home from './pages/Home/Home.js'
 import Compose from './pages/Compose/Compose.js'
+import FindImage from './pages/FindImage/FindImage.js'
 import Comments from './pages/Comments/Comments.js'
 import Login from './pages/Login/Login.js'
 import Notifications from './pages/Notifications/Notifications.js'
@@ -34,12 +35,12 @@ class App extends Container {
         })
     }
     
-
     render() {
         return (
             <Navigation default='Login' name="mainNav" beforePage={this.beforePage.bind(this)}>
                 <Pages name='Home' component={Home} />
                 <Pages name='Compose' component={Compose} />
+                <Pages name='FindImage' component={FindImage} />
                 <Pages name='Comments' component={Comments} />
                 <Pages name='Notifications' component={Notifications} />
                 <Pages name='Login' component={Login} />

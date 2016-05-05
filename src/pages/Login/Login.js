@@ -1,15 +1,12 @@
 import React from 'react'
-import {
-    Navigation
-}
-from '../../phonepack'
+import { Navigation } from '../../phonepack'
 
 class Login extends React.Component {
     
     login() {
         openFB.login((data) => {
             openFB.api({
-                path: '/me',
+                path: '/me?fields=gender,location',
                 success: (data) => {
                     let user = data;
                     user.avatarUrl = 'http://graph.facebook.com/' + data.id + '/picture?type=small';

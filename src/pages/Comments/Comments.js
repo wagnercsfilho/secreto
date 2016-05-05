@@ -1,7 +1,7 @@
 import React from "react"
 import Container from '../../redux/Container'
-import PostBox from "./PostBox"
-import CommentBox from "./CommentBox"
+import PostBox from "./components/PostBox"
+import CommentBox from "./components/CommentBox"
 import actions from "../../redux/actions"
 
 class Comments extends Container {
@@ -23,6 +23,7 @@ class Comments extends Container {
     
     createComment() {
         this.dispatch(actions.createComment(this.props.post, this.refs.comment.value));
+        this.refs.comment.value = '';
     }
 
     render() {

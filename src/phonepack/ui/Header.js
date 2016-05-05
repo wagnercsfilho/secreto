@@ -24,6 +24,22 @@ class Header extends React.Component {
     
 }
 
+class SubHeader extends React.Component {
+    render() {
+        let { className, headerShadow, ...other } = this.props;
+        let cls = classnames('sub-header', {
+            'header--shadow': headerShadow
+        }, className);
+        
+        return (
+            <div className={cls} {...other}>
+                { this.props.children }
+            </div>
+        )
+    }
+}
+
+
 class HeaderButton extends React.Component {
     render() {
         return (
@@ -44,4 +60,4 @@ class HeaderTitle extends React.Component {
     }
 }
 
-export { Header as Header, HeaderButton as HeaderButton, HeaderTitle as HeaderTitle };
+export { Header as Header, SubHeader as SubHeader, HeaderButton as HeaderButton, HeaderTitle as HeaderTitle };

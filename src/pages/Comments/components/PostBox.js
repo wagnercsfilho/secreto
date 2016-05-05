@@ -1,8 +1,8 @@
 import React from "react"
 import classNames from 'classnames'
-import { Navigation } from '../../phonepack'
-import Container from '../../redux/Container'
-import actions from "../../redux/actions"
+import { Navigation } from '../../../phonepack'
+import Container from '../../../redux/Container'
+import actions from "../../../redux/actions"
 
 class PostBox extends Container {
     
@@ -27,10 +27,15 @@ class PostBox extends Container {
             'like': true,
             'text-red': post.likes.indexOf(window.currentUser._id) > -1
         });
+        
+        let style = {};
+        if (post.imageBackground) {
+            style.backgroundImage = "url('"+ post.imageBackground + "')";
+        }
 
         return (
             <ul className="quote-card">
-                <li className={post.quotebg}> 
+                <li className={post.quotebg} style={style}> 
                 <div className="quote_top"> 
                     <button className="button button--icon ripple" onClick={this.closePage.bind(this)}> 
                       <i className="icon mdi mdi-arrow-left"></i> 

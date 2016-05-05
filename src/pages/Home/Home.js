@@ -1,6 +1,6 @@
 import React from "react"
 import Container from '../../redux/Container'
-import PostList from "./PostList.js"
+import PostList from "./components/PostList.js"
 import actions from "../../redux/actions"
 import { Content, SideMenu, Header, HeaderButton, HeaderTitle, View, List, ListItem, Button, Icon  } from '../../phonepack'
 
@@ -8,12 +8,13 @@ class Home extends Container {
 
     constructor() {
         super();
+        
+        this.state = { loading: true };
 
         this.getState = function() {
             return {
                 posts: this.store.getState().posts,
-                notifications: this.store.getState().notifications.filter((notification) => !notification.read),
-                loading: !this.store.getState().posts.length
+                notifications: this.store.getState().notifications.filter((notification) => !notification.read)
             }
         }
     }
@@ -55,7 +56,7 @@ class Home extends Container {
                             <ListItem> Log out </ListItem>
                         </List>
                 </SideMenu>
-                <View>
+                <View loading={this.state.loading}>
                     <Header
                       headerShadow
                       shrinkHeader>
