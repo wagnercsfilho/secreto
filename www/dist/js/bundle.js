@@ -23163,7 +23163,7 @@
 	                        { className: "quote-card", style: { height: '100%' } },
 	                        _react2.default.createElement(
 	                            "li",
-	                            { className: "bg-blue-grey",
+	                            { className: "txt-concrete",
 	                                ref: "postTexture",
 	                                style: { height: '100%' } },
 	                            _react2.default.createElement(

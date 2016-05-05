@@ -104,7 +104,7 @@ class Compose extends Container {
                 </Header>
                 <Content hasHeader>
                     <ul className="quote-card" style={ { height: '100%' } }>
-                        <li className="bg-blue-grey" 
+                        <li className="txt-concrete" 
                             ref="postTexture" 
                             style={ { height: '100%' } }>
                             <p>
