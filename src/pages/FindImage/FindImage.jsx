@@ -32,6 +32,7 @@ export default function FindImage() {
                             <div 
                                 key={index} 
                                 onClick={this.selectImage.bind(this, image)} 
+                                style={ { backgroundImage: 'url("'+image.Thumbnail.MediaUrl+'")' }  }
                                 className="gallery"> 
                             </div>
                             )

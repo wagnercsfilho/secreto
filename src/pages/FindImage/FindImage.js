@@ -1,6 +1,9 @@
 import React from "react"
 import Container from '../../redux/Container'
 import { Base64 } from 'js-base64'
+import template from './FindImage.jsx'
+
+import './FindImage.scss'
 
 class FindImage extends Container {
     

@@ -79,6 +79,15 @@ class Compose extends Container {
                     alert("S3 upload failed");
                 });
         }
+        else {
+            this.dispatch(actions.createPost(this.post, () => {
+                let notification = new phonepack.Notification();
+                notification.success('Seu segredo foi criado com sucesso!');
+                this.closeCurrentPage('mainNav');
+            }));
+        }
+
+
 
 
     }

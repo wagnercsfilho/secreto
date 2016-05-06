@@ -34,7 +34,7 @@
 /******/ 	__webpack_require__.c = installedModules;
 
 /******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "/";
+/******/ 	__webpack_require__.p = "/www/";
 
 /******/ 	// Load entry module and return exports
 /******/ 	return __webpack_require__(0);
@@ -20055,19 +20055,19 @@
 
 	var _FindImage2 = _interopRequireDefault(_FindImage);
 
-	var _Comments = __webpack_require__(210);
+	var _Comments = __webpack_require__(211);
 
 	var _Comments2 = _interopRequireDefault(_Comments);
 
-	var _Login = __webpack_require__(214);
+	var _Login = __webpack_require__(215);
 
 	var _Login2 = _interopRequireDefault(_Login);
 
-	var _Notifications = __webpack_require__(217);
+	var _Notifications = __webpack_require__(218);
 
 	var _Notifications2 = _interopRequireDefault(_Notifications);
 
-	__webpack_require__(218);
+	__webpack_require__(219);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -23131,6 +23131,12 @@
 	                }).catch(function (e) {
 	                    alert("S3 upload failed");
 	                });
+	            } else {
+	                this.dispatch(_actions2.default.createPost(this.post, function () {
+	                    var notification = new phonepack.Notification();
+	                    notification.success('Seu segredo foi criado com sucesso!');
+	                    _this4.closeCurrentPage('mainNav');
+	                }));
 	            }
 	        }
 	    }, {
@@ -23376,6 +23382,12 @@
 
 	var _jsBase = __webpack_require__(205);
 
+	var _FindImage = __webpack_require__(210);
+
+	var _FindImage2 = _interopRequireDefault(_FindImage);
+
+	__webpack_require__(220);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -23390,7 +23402,7 @@
 	    _createClass(FindImage, [{
 	        key: 'render',
 	        value: function render() {
-	            return template.call(this);
+	            return _FindImage2.default.call(this);
 	        }
 	    }]);
 
@@ -25484,6 +25496,75 @@
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
+	exports.default = FindImage;
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _phonepack = __webpack_require__(185);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function FindImage() {
+	    var _this = this;
+
+	    return _react2.default.createElement(
+	        _phonepack.View,
+	        { loading: this.state.loading, className: "find-image" },
+	        _react2.default.createElement(
+	            _phonepack.Header,
+	            null,
+	            _react2.default.createElement(
+	                _phonepack.HeaderButton,
+	                null,
+	                _react2.default.createElement(
+	                    _phonepack.Button,
+	                    { icon: true, ripple: true, onClick: this.closeCurrentPage.bind(this, 'mainNav') },
+	                    _react2.default.createElement(_phonepack.Icon, { name: "arrow-left" })
+	                )
+	            ),
+	            _react2.default.createElement(
+	                _phonepack.HeaderTitle,
+	                null,
+	                "Pesquisar imagens"
+	            )
+	        ),
+	        _react2.default.createElement(
+	            _phonepack.SubHeader,
+	            { className: "bg-white sub-header header--shadow" },
+	            _react2.default.createElement(
+	                "form",
+	                { onSubmit: this.find.bind(this), className: "form-search" },
+	                _react2.default.createElement(_phonepack.Input, { className: "input-search",
+	                    onChange: this.handleSearch.bind(this),
+	                    type: "search",
+	                    placeholder: "Escreva aqui sua busca" })
+	            )
+	        ),
+	        _react2.default.createElement(
+	            _phonepack.Content,
+	            { hasHeader: true, hasSubHeader: true },
+	            this.state.images.map(function (image, index) {
+	                return _react2.default.createElement("div", {
+	                    key: index,
+	                    onClick: _this.selectImage.bind(_this, image),
+	                    style: { backgroundImage: 'url("' + image.Thumbnail.MediaUrl + '")' },
+	                    className: "gallery" });
+	            })
+	        )
+	    );
+	}
+
+/***/ },
+/* 211 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -25497,11 +25578,11 @@
 
 	var _Container3 = _interopRequireDefault(_Container2);
 
-	var _PostBox = __webpack_require__(211);
+	var _PostBox = __webpack_require__(212);
 
 	var _PostBox2 = _interopRequireDefault(_PostBox);
 
-	var _CommentBox = __webpack_require__(212);
+	var _CommentBox = __webpack_require__(213);
 
 	var _CommentBox2 = _interopRequireDefault(_CommentBox);
 
@@ -25588,7 +25669,7 @@
 	exports.default = Comments;
 
 /***/ },
-/* 211 */
+/* 212 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -25746,7 +25827,7 @@
 	exports.default = PostBox;
 
 /***/ },
-/* 212 */
+/* 213 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -25761,7 +25842,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _CommentItem = __webpack_require__(213);
+	var _CommentItem = __webpack_require__(214);
 
 	var _CommentItem2 = _interopRequireDefault(_CommentItem);
 
@@ -25818,7 +25899,7 @@
 	exports.default = CommentBox;
 
 /***/ },
-/* 213 */
+/* 214 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -25935,7 +26016,7 @@
 	exports.default = CommentItem;
 
 /***/ },
-/* 214 */
+/* 215 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -25952,11 +26033,11 @@
 
 	var _phonepack = __webpack_require__(185);
 
-	var _Login = __webpack_require__(215);
+	var _Login = __webpack_require__(216);
 
 	var _Login2 = _interopRequireDefault(_Login);
 
-	__webpack_require__(216);
+	__webpack_require__(217);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -26009,7 +26090,7 @@
 	exports.default = Login;
 
 /***/ },
-/* 215 */
+/* 216 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -26057,14 +26138,14 @@
 	}
 
 /***/ },
-/* 216 */
+/* 217 */
 /***/ function(module, exports) {
 
 	// removed by extract-text-webpack-plugin
 	"use strict";
 
 /***/ },
-/* 217 */
+/* 218 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -26177,7 +26258,14 @@
 	exports.default = Notifications;
 
 /***/ },
-/* 218 */
+/* 219 */
+/***/ function(module, exports) {
+
+	// removed by extract-text-webpack-plugin
+	"use strict";
+
+/***/ },
+/* 220 */
 /***/ function(module, exports) {
 
 	// removed by extract-text-webpack-plugin

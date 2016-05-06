@@ -7,7 +7,7 @@ module.exports = {
     output: {
         path: path.resolve('./www/dist/'),
         filename: 'js/bundle.js',
-        publicPath: '/'
+        publicPath: '/www/'
     },
     module: {
         loaders: [{
@@ -21,7 +21,7 @@ module.exports = {
         { test: /\.css$/, loader: ExtractTextPlugin.extract("style-loader", "css-loader!autoprefixer-loader") },
         { test: /\.scss$/, loader: ExtractTextPlugin.extract("style-loader", "css-loader!sass-loader!autoprefixer-loader") },
     //    { test: /\.(png|jpg|gif)$/, loader: "url-loader?limit=100000" },
-        { test: /\.(png|jpg|gif)$/, loader: "file-loader?name=www/dist/img/img-[hash:6].[ext]" }]
+        { test: /\.(png|jpg|gif)$/, loader: "file-loader?name=dist/img/img-[hash:6].[ext]" }]
     },
     // Use the plugin to specify the resulting filename (and add needed behavior to the compiler)
     plugins: [
