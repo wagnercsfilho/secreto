@@ -4,7 +4,7 @@ import actions from "../../redux/actions"
 import template from './Compose.jsx'
 
 class Compose extends Container {
-    
+
     render() {
         return template.call(this)
     }
@@ -43,7 +43,8 @@ class Compose extends Container {
         getCameraPicture(Camera.PictureSourceType.CAMERA)
             .then((imageURI) => {
                 this.refs.postTexture.style.backgroundImage = 'url(' + imageURI + ')';
-            }).catch((err)=>{
+                this.post.upload = imageURI;
+            }).catch((err) => {
                 alert('Failed because: ' + err);
             });
     }
@@ -52,7 +53,7 @@ class Compose extends Container {
         getCameraPicture(Camera.PictureSourceType.PHOTOLIBRARY)
             .then((imageURI) => {
                 this.refs.postTexture.style.backgroundImage = 'url(' + imageURI + ')';
-            }).catch((err)=>{
+            }).catch((err) => {
                 alert('Failed because: ' + err);
             });
     }
@@ -61,11 +62,25 @@ class Compose extends Container {
         this.post.text = this.state.textCompose;
         this.post.imageBackground = this.state.imageBackground;
 
-        this.dispatch(actions.createPost(this.post, () => {
-            let notification = new phonepack.Notification();
-            notification.success('Seu segredo foi criado com sucesso!');
-            this.closeCurrentPage('mainNav');
-        }));
+        if (this.upload) {
+            var fileName = "" + (new Date()).getTime() + ".jpg"; // consider a more reliable way to generate unique ids
+            s3Uploader.upload(this.upload, fileName)
+                .then(() => {
+                    alert("S3 upload succeeded");
+
+                    this.dispatch(actions.createPost(this.post, () => {
+                        let notification = new phonepack.Notification();
+                        notification.success('Seu segredo foi criado com sucesso!');
+                        this.closeCurrentPage('mainNav');
+                    }));
+
+                })
+                .catch((e) => {
+                    alert("S3 upload failed");
+                });
+        }
+
+
     }
 
     changePostTexture(e) {
@@ -79,17 +94,22 @@ class Compose extends Container {
 
         this.post.quotebg = this.textures[this.textureIndex];
     }
-    
+
     selectImage(image, listImage) {
         this.lastImages = listImage;
-        this.setState({ imageBackground: image.MediaUrl });
+        this.setState({
+            imageBackground: image.MediaUrl
+        });
         this.refs.postTexture.style.backgroundImage = 'url(' + image.MediaUrl + ')';
     }
 
     findImage() {
-        this.pushPage('mainNav', 'FindImage', { selectImage: this.selectImage.bind(this), lastImages: this.lastImages });
+        this.pushPage('mainNav', 'FindImage', {
+            selectImage: this.selectImage.bind(this),
+            lastImages: this.lastImages
+        });
     }
-    
+
 }
 
 export default Compose;
@@ -110,5 +130,50 @@ function getCameraPicture(sourceType) {
             destinationType: Camera.DestinationType.FILE_URI
         });
     });
-    
+
 }
+
+var s3Uploader = (function() {
+
+    var signingURI = "http://192.168.1.8:3000/signing";
+
+    function upload(imageURI, fileName) {
+
+        return new Promise(function(resolve, reject) {
+
+            var ft = new FileTransfer();
+            var options = new FileUploadOptions();
+
+            options.fileKey = "file";
+            options.fileName = fileName;
+            options.mimeType = "image/jpeg";
+            options.chunkedMode = false;
+
+            socket.emit('sign', fileName, function(data) {
+                options.params = {
+                    "key": fileName,
+                    "AWSAccessKeyId": data.awsKey,
+                    "acl": "public-read",
+                    "policy": data.policy,
+                    "signature": data.signature,
+                    "Content-Type": "image/jpeg"
+                };
+
+                ft.upload(imageURI, "https://" + data.bucket + ".s3.amazonaws.com/",
+                    function(e) {
+                        resolve(e);
+                    },
+                    function(e) {
+                        alert("Upload failed");
+                        reject(e);
+                    }, options);
+
+            });
+        });
+    }
+
+    return {
+        upload: upload
+    }
+
+}());

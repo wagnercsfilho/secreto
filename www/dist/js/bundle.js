@@ -58,7 +58,7 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	window.socket = io.connect('https://weezer.herokuapp.com/');
+	window.socket = io.connect('https://secreto-server-wagnercsfilho.c9users.io/');
 
 	openFB.init({
 	    appId: '1707024216207772'
@@ -23094,6 +23094,7 @@
 
 	            getCameraPicture(Camera.PictureSourceType.CAMERA).then(function (imageURI) {
 	                _this2.refs.postTexture.style.backgroundImage = 'url(' + imageURI + ')';
+	                _this2.post.upload = imageURI;
 	            }).catch(function (err) {
 	                alert('Failed because: ' + err);
 	            });
@@ -23117,11 +23118,20 @@
 	            this.post.text = this.state.textCompose;
 	            this.post.imageBackground = this.state.imageBackground;
 
-	            this.dispatch(_actions2.default.createPost(this.post, function () {
-	                var notification = new phonepack.Notification();
-	                notification.success('Seu segredo foi criado com sucesso!');
-	                _this4.closeCurrentPage('mainNav');
-	            }));
+	            if (this.upload) {
+	                var fileName = "" + new Date().getTime() + ".jpg"; // consider a more reliable way to generate unique ids
+	                s3Uploader.upload(this.upload, fileName).then(function () {
+	                    alert("S3 upload succeeded");
+
+	                    _this4.dispatch(_actions2.default.createPost(_this4.post, function () {
+	                        var notification = new phonepack.Notification();
+	                        notification.success('Seu segredo foi criado com sucesso!');
+	                        _this4.closeCurrentPage('mainNav');
+	                    }));
+	                }).catch(function (e) {
+	                    alert("S3 upload failed");
+	                });
+	            }
 	        }
 	    }, {
 	        key: "changePostTexture",
@@ -23140,13 +23150,18 @@
 	        key: "selectImage",
 	        value: function selectImage(image, listImage) {
 	            this.lastImages = listImage;
-	            this.setState({ imageBackground: image.MediaUrl });
+	            this.setState({
+	                imageBackground: image.MediaUrl
+	            });
 	            this.refs.postTexture.style.backgroundImage = 'url(' + image.MediaUrl + ')';
 	        }
 	    }, {
 	        key: "findImage",
 	        value: function findImage() {
-	            this.pushPage('mainNav', 'FindImage', { selectImage: this.selectImage.bind(this), lastImages: this.lastImages });
+	            this.pushPage('mainNav', 'FindImage', {
+	                selectImage: this.selectImage.bind(this),
+	                lastImages: this.lastImages
+	            });
 	        }
 	    }]);
 
@@ -23173,6 +23188,47 @@
 	        });
 	    });
 	}
+
+	var s3Uploader = function () {
+
+	    var signingURI = "http://192.168.1.8:3000/signing";
+
+	    function upload(imageURI, fileName) {
+
+	        return new Promise(function (resolve, reject) {
+
+	            var ft = new FileTransfer();
+	            var options = new FileUploadOptions();
+
+	            options.fileKey = "file";
+	            options.fileName = fileName;
+	            options.mimeType = "image/jpeg";
+	            options.chunkedMode = false;
+
+	            socket.emit('sign', fileName, function (data) {
+	                options.params = {
+	                    "key": fileName,
+	                    "AWSAccessKeyId": data.awsKey,
+	                    "acl": "public-read",
+	                    "policy": data.policy,
+	                    "signature": data.signature,
+	                    "Content-Type": "image/jpeg"
+	                };
+
+	                ft.upload(imageURI, "https://" + data.bucket + ".s3.amazonaws.com/", function (e) {
+	                    resolve(e);
+	                }, function (e) {
+	                    alert("Upload failed");
+	                    reject(e);
+	                }, options);
+	            });
+	        });
+	    }
+
+	    return {
+	        upload: upload
+	    };
+	}();
 
 /***/ },
 /* 203 */
