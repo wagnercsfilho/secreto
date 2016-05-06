@@ -108,7 +108,7 @@ class Navigation extends React.Component {
         render() {
             return <div className="navigation" ref="navigation"></div>
         }
-    }
+}
 
     Navigation.instances = {};
     Navigation.push = function(name, component, params, animation) {

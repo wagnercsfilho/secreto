@@ -1,0 +1,26 @@
+.find-image {
+    
+    .form-search {
+        width: '100%';
+        display: 'inline-flex';
+    }
+    
+    .input-search {
+        margin: '5px 10px 0 10px';
+        padding: '0px 10px 0 10px'; 
+        background: '#f2f2f2';
+        border-radius: '5px';
+    }
+    
+    .gallery {
+        width: '33.33%';
+        backgroundSize: 'cover';
+        backgroundPosition: 'center center';
+        backgroundImage: 'url("'+image.Thumbnail.MediaUrl+'")'; 
+        paddingTop: '15%'; 
+        paddingBottom: '15%';
+        overflow: 'hidden';
+        float: 'left';
+    }
+    
+}

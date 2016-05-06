@@ -8,6 +8,8 @@ import Comments from './pages/Comments/Comments.js'
 import Login from './pages/Login/Login.js'
 import Notifications from './pages/Notifications/Notifications.js'
 
+import './App.scss'
+
 class App extends Container {
 
     beforePage(next) {

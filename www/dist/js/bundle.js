@@ -20051,21 +20051,23 @@
 
 	var _Compose2 = _interopRequireDefault(_Compose);
 
-	var _FindImage = __webpack_require__(203);
+	var _FindImage = __webpack_require__(204);
 
 	var _FindImage2 = _interopRequireDefault(_FindImage);
 
-	var _Comments = __webpack_require__(209);
+	var _Comments = __webpack_require__(210);
 
 	var _Comments2 = _interopRequireDefault(_Comments);
 
-	var _Login = __webpack_require__(213);
+	var _Login = __webpack_require__(214);
 
 	var _Login2 = _interopRequireDefault(_Login);
 
-	var _Notifications = __webpack_require__(214);
+	var _Notifications = __webpack_require__(217);
 
 	var _Notifications2 = _interopRequireDefault(_Notifications);
+
+	__webpack_require__(218);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -21557,16 +21559,16 @@
 	            var hasSubHeader = _props.hasSubHeader;
 	            var hasHeader = _props.hasHeader;
 	            var hasFooter = _props.hasFooter;
-	            var headerShadow = _props.headerShadow;
+	            var padding = _props.padding;
 
-	            var other = _objectWithoutProperties(_props, ['className', 'contentPadding', 'hasSubHeader', 'hasHeader', 'hasFooter', 'headerShadow']);
+	            var other = _objectWithoutProperties(_props, ['className', 'contentPadding', 'hasSubHeader', 'hasHeader', 'hasFooter', 'padding']);
 
 	            var cls = (0, _classnames2.default)('content', className, {
 	                'content-padding': contentPadding,
 	                'has-header': hasHeader,
 	                'has-footer': hasFooter,
-	                'header-shadow': headerShadow,
-	                'has-sub-header': hasSubHeader
+	                'has-sub-header': hasSubHeader,
+	                'content--padding': padding
 	            });
 
 	            return _react2.default.createElement(
@@ -21711,11 +21713,13 @@
 /* 190 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -21723,7 +21727,13 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
+	var _classnames = __webpack_require__(188);
+
+	var _classnames2 = _interopRequireDefault(_classnames);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -21744,7 +21754,7 @@
 	    }
 
 	    _createClass(View, [{
-	        key: "showLoadingPlugin",
+	        key: 'showLoadingPlugin',
 	        value: function showLoadingPlugin() {
 	            this.loading = new phonepack.Loading({
 	                spinner: true,
@@ -21753,13 +21763,13 @@
 	            this.loading.show();
 	        }
 	    }, {
-	        key: "hideLoadingPlugin",
+	        key: 'hideLoadingPlugin',
 	        value: function hideLoadingPlugin() {
 	            this.loading.hide();
 	            this.loading = null;
 	        }
 	    }, {
-	        key: "render",
+	        key: 'render',
 	        value: function render() {
 	            if (this.props.loading && !this.loading) {
 	                this.showLoadingPlugin();
@@ -21767,9 +21777,16 @@
 	                this.hideLoadingPlugin();
 	            }
 
+	            var _props = this.props;
+	            var className = _props.className;
+
+	            var other = _objectWithoutProperties(_props, ['className']);
+
+	            var cls = (0, _classnames2.default)('pages', className);
+
 	            return _react2.default.createElement(
-	                "div",
-	                { className: "pages" },
+	                'div',
+	                _extends({ className: cls }, other),
 	                this.props.children
 	            );
 	        }
@@ -22996,9 +23013,9 @@
 	    value: true
 	});
 
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	var _react = __webpack_require__(1);
 
@@ -23012,7 +23029,9 @@
 
 	var _actions2 = _interopRequireDefault(_actions);
 
-	var _phonepack = __webpack_require__(185);
+	var _Compose = __webpack_require__(203);
+
+	var _Compose2 = _interopRequireDefault(_Compose);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -23024,6 +23043,13 @@
 
 	var Compose = function (_Container) {
 	    _inherits(Compose, _Container);
+
+	    _createClass(Compose, [{
+	        key: "render",
+	        value: function render() {
+	            return _Compose2.default.call(this);
+	        }
+	    }]);
 
 	    function Compose() {
 	        _classCallCheck(this, Compose);
@@ -23122,110 +23148,6 @@
 	        value: function findImage() {
 	            this.pushPage('mainNav', 'FindImage', { selectImage: this.selectImage.bind(this), lastImages: this.lastImages });
 	        }
-	    }, {
-	        key: "render",
-	        value: function render() {
-	            return _react2.default.createElement(
-	                _phonepack.View,
-	                null,
-	                _react2.default.createElement(
-	                    _phonepack.Header,
-	                    { shadow: true },
-	                    _react2.default.createElement(
-	                        _phonepack.HeaderButton,
-	                        null,
-	                        _react2.default.createElement(
-	                            _phonepack.Button,
-	                            { icon: true, ripple: true, onClick: this.closeCurrentPage.bind(this, 'mainNav') },
-	                            _react2.default.createElement(_phonepack.Icon, { name: "arrow-left" })
-	                        )
-	                    ),
-	                    _react2.default.createElement(
-	                        _phonepack.HeaderTitle,
-	                        null,
-	                        "Compartilhar"
-	                    ),
-	                    _react2.default.createElement(
-	                        _phonepack.HeaderButton,
-	                        null,
-	                        _react2.default.createElement(
-	                            _phonepack.Button,
-	                            { icon: true, ripple: true, className: { hide: this.state.textCompose == '' }, onClick: this.savePost.bind(this) },
-	                            _react2.default.createElement(_phonepack.Icon, { name: "send" })
-	                        )
-	                    )
-	                ),
-	                _react2.default.createElement(
-	                    _phonepack.Content,
-	                    { hasHeader: true },
-	                    _react2.default.createElement(
-	                        "ul",
-	                        { className: "quote-card", style: { height: '100%' } },
-	                        _react2.default.createElement(
-	                            "li",
-	                            { className: "txt-concrete",
-	                                ref: "postTexture",
-	                                style: { height: '100%' } },
-	                            _react2.default.createElement(
-	                                "p",
-	                                null,
-	                                _react2.default.createElement("textarea", {
-	                                    autoFocus: true,
-	                                    onChange: this.bindTextCompose.bind(this),
-	                                    maxlength: "140",
-	                                    className: "compose-textarea",
-	                                    placeholder: "Digite aqui seu segredo",
-	                                    ref: "textCompose" })
-	                            )
-	                        )
-	                    )
-	                ),
-	                _react2.default.createElement(
-	                    _phonepack.Footer,
-	                    { className: "bg-white" },
-	                    _react2.default.createElement(
-	                        _phonepack.Row,
-	                        { style: { textAlign: 'center' } },
-	                        _react2.default.createElement(
-	                            _phonepack.Cell,
-	                            null,
-	                            _react2.default.createElement(
-	                                _phonepack.Button,
-	                                { icon: true, ripple: true, className: "text-grey", onClick: this.takePicCamera.bind(this) },
-	                                _react2.default.createElement(_phonepack.Icon, { name: "camera" })
-	                            )
-	                        ),
-	                        _react2.default.createElement(
-	                            _phonepack.Cell,
-	                            null,
-	                            _react2.default.createElement(
-	                                _phonepack.Button,
-	                                { icon: true, ripple: true, className: "text-grey", onClick: this.takePicGallery.bind(this) },
-	                                _react2.default.createElement(_phonepack.Icon, { name: "folder-image" })
-	                            )
-	                        ),
-	                        _react2.default.createElement(
-	                            _phonepack.Cell,
-	                            null,
-	                            _react2.default.createElement(
-	                                _phonepack.Button,
-	                                { icon: true, ripple: true, className: "text-grey", onClick: this.findImage.bind(this) },
-	                                _react2.default.createElement(_phonepack.Icon, { name: "magnify" })
-	                            )
-	                        ),
-	                        _react2.default.createElement(
-	                            _phonepack.Cell,
-	                            null,
-	                            _react2.default.createElement(
-	                                _phonepack.Button,
-	                                { icon: true, ripple: true, className: "text-grey", onClick: this.changePostTexture.bind(this) },
-	                                _react2.default.createElement(_phonepack.Icon, { name: "palette" })
-	                            )
-	                        )
-	                    )
-	                )
-	            );
-	        }
 	    }]);
 
 	    return Compose;
@@ -23261,10 +23183,132 @@
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
+	exports.default = Compose;
 
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _phonepack = __webpack_require__(185);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function Compose() {
+	    return _react2.default.createElement(
+	        _phonepack.View,
+	        null,
+	        _react2.default.createElement(
+	            _phonepack.Header,
+	            { shadow: true },
+	            _react2.default.createElement(
+	                _phonepack.HeaderButton,
+	                null,
+	                _react2.default.createElement(
+	                    _phonepack.Button,
+	                    { icon: true, ripple: true, onClick: this.closeCurrentPage.bind(this, 'mainNav') },
+	                    _react2.default.createElement(_phonepack.Icon, { name: 'arrow-left' })
+	                )
+	            ),
+	            _react2.default.createElement(
+	                _phonepack.HeaderTitle,
+	                null,
+	                'Compartilhar'
+	            ),
+	            _react2.default.createElement(
+	                _phonepack.HeaderButton,
+	                null,
+	                _react2.default.createElement(
+	                    _phonepack.Button,
+	                    { icon: true, ripple: true, className: { hide: this.state.textCompose == '' }, onClick: this.savePost.bind(this) },
+	                    _react2.default.createElement(_phonepack.Icon, { name: 'send' })
+	                )
+	            )
+	        ),
+	        _react2.default.createElement(
+	            _phonepack.Content,
+	            { hasHeader: true },
+	            _react2.default.createElement(
+	                'ul',
+	                { className: 'quote-card', style: { height: '100%' } },
+	                _react2.default.createElement(
+	                    'li',
+	                    { className: 'txt-lodyas',
+	                        ref: 'postTexture',
+	                        style: { height: '100%' } },
+	                    _react2.default.createElement(
+	                        'p',
+	                        null,
+	                        _react2.default.createElement('textarea', {
+	                            autoFocus: true,
+	                            onChange: this.bindTextCompose.bind(this),
+	                            maxlength: '140',
+	                            className: 'compose-textarea',
+	                            placeholder: 'Digite aqui seu segredo',
+	                            ref: 'textCompose' })
+	                    )
+	                )
+	            )
+	        ),
+	        _react2.default.createElement(
+	            _phonepack.Footer,
+	            { className: 'bg-white' },
+	            _react2.default.createElement(
+	                _phonepack.Row,
+	                { style: { textAlign: 'center' } },
+	                _react2.default.createElement(
+	                    _phonepack.Cell,
+	                    null,
+	                    _react2.default.createElement(
+	                        _phonepack.Button,
+	                        { icon: true, ripple: true, className: 'text-grey', onClick: this.takePicCamera.bind(this) },
+	                        _react2.default.createElement(_phonepack.Icon, { name: 'camera' })
+	                    )
+	                ),
+	                _react2.default.createElement(
+	                    _phonepack.Cell,
+	                    null,
+	                    _react2.default.createElement(
+	                        _phonepack.Button,
+	                        { icon: true, ripple: true, className: 'text-grey', onClick: this.takePicGallery.bind(this) },
+	                        _react2.default.createElement(_phonepack.Icon, { name: 'folder-image' })
+	                    )
+	                ),
+	                _react2.default.createElement(
+	                    _phonepack.Cell,
+	                    null,
+	                    _react2.default.createElement(
+	                        _phonepack.Button,
+	                        { icon: true, ripple: true, className: 'text-grey', onClick: this.findImage.bind(this) },
+	                        _react2.default.createElement(_phonepack.Icon, { name: 'magnify' })
+	                    )
+	                ),
+	                _react2.default.createElement(
+	                    _phonepack.Cell,
+	                    null,
+	                    _react2.default.createElement(
+	                        _phonepack.Button,
+	                        { icon: true, ripple: true, className: 'text-grey', onClick: this.changePostTexture.bind(this) },
+	                        _react2.default.createElement(_phonepack.Icon, { name: 'palette' })
+	                    )
+	                )
+	            )
+	        )
+	    );
+	}
+
+/***/ },
+/* 204 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
 
 	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	var _react = __webpack_require__(1);
 
@@ -23274,9 +23318,7 @@
 
 	var _Container3 = _interopRequireDefault(_Container2);
 
-	var _phonepack = __webpack_require__(185);
-
-	var _jsBase = __webpack_require__(204);
+	var _jsBase = __webpack_require__(205);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -23289,12 +23331,17 @@
 	var FindImage = function (_Container) {
 	    _inherits(FindImage, _Container);
 
+	    _createClass(FindImage, [{
+	        key: 'render',
+	        value: function render() {
+	            return template.call(this);
+	        }
+	    }]);
+
 	    function FindImage(props) {
 	        _classCallCheck(this, FindImage);
 
 	        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(FindImage).call(this));
-
-	        console.log(props);
 
 	        _this.state = {
 	            images: props.lastImages || [],
@@ -23344,68 +23391,6 @@
 	        value: function handleSearch(e) {
 	            this.search = e.target.value;
 	        }
-	    }, {
-	        key: 'render',
-	        value: function render() {
-	            var _this3 = this;
-
-	            console.log(this.state);
-	            return _react2.default.createElement(
-	                _phonepack.View,
-	                { loading: this.state.loading },
-	                _react2.default.createElement(
-	                    _phonepack.Header,
-	                    null,
-	                    _react2.default.createElement(
-	                        _phonepack.HeaderButton,
-	                        null,
-	                        _react2.default.createElement(
-	                            _phonepack.Button,
-	                            { icon: true, ripple: true, onClick: this.closeCurrentPage.bind(this, 'mainNav') },
-	                            _react2.default.createElement(_phonepack.Icon, { name: 'arrow-left' })
-	                        )
-	                    ),
-	                    _react2.default.createElement(
-	                        _phonepack.HeaderTitle,
-	                        null,
-	                        'Pesquisar imagens'
-	                    )
-	                ),
-	                _react2.default.createElement(
-	                    _phonepack.SubHeader,
-	                    { className: 'bg-white sub-header header--shadow' },
-	                    _react2.default.createElement(
-	                        'form',
-	                        { onSubmit: this.find.bind(this), style: { width: '100%', display: 'inline-flex' } },
-	                        _react2.default.createElement(_phonepack.Input, { onChange: this.handleSearch.bind(this), style: {
-	                                margin: '5px 10px 0 10px',
-	                                padding: '0px 10px 0 10px',
-	                                background: '#f2f2f2',
-	                                borderRadius: '5px' },
-	                            type: 'search',
-	                            placeholder: 'Escreva aqui sua busca' })
-	                    )
-	                ),
-	                _react2.default.createElement(
-	                    _phonepack.Content,
-	                    { hasHeader: true, hasSubHeader: true },
-	                    this.state.images.map(function (image, index) {
-	                        return _react2.default.createElement('div', {
-	                            key: index,
-	                            onClick: _this3.selectImage.bind(_this3, image),
-	                            style: {
-	                                width: '33.33%',
-	                                backgroundSize: 'cover',
-	                                backgroundPosition: 'center center',
-	                                backgroundImage: 'url("' + image.Thumbnail.MediaUrl + '")',
-	                                paddingTop: '15%',
-	                                paddingBottom: '15%',
-	                                overflow: 'hidden',
-	                                float: 'left' } });
-	                    })
-	                )
-	            );
-	        }
 	    }]);
 
 	    return FindImage;
@@ -23415,17 +23400,17 @@
 
 
 	function getWebImages(query) {
-	    var _this4 = this;
+	    var _this3 = this;
 
 	    return new Promise(function (resolve, reject) {
-	        var bingApiUrl = 'https://api.datamarket.azure.com/Data.ashx/Bing/Search/Image?Query=%27' + query + '%27&$top=50&$format=json';
+	        var bingApiUrl = 'https://api.datamarket.azure.com/Data.ashx/Bing/Search/Image?Query=%27' + query + '%27&$top=48&ImageFilters=%27Size%3AMedium%27&$format=json';
 	        var bingApiAppId = "AFupOk7j13u1TSQLlqC1tpzesk6EEj4r7nJuBw/jpNI";
 	        var accountKeyEncoded = _jsBase.Base64.encode(":" + bingApiAppId);
 
 	        //Make the API call.       
 	        $.ajax({
 	            url: bingApiUrl,
-	            context: _this4,
+	            context: _this3,
 	            headers: {
 	                'Authorization': 'Basic ' + accountKeyEncoded
 	            },
@@ -23449,7 +23434,7 @@
 	}
 
 /***/ },
-/* 204 */
+/* 205 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -23471,7 +23456,7 @@
 	    var buffer;
 	    if (typeof module !== 'undefined' && module.exports) {
 	        try {
-	            buffer = __webpack_require__(205).Buffer;
+	            buffer = __webpack_require__(206).Buffer;
 	        } catch (err) {}
 	    }
 	    // constants
@@ -23649,7 +23634,7 @@
 
 
 /***/ },
-/* 205 */
+/* 206 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer, global) {/*!
@@ -23662,9 +23647,9 @@
 
 	'use strict'
 
-	var base64 = __webpack_require__(206)
-	var ieee754 = __webpack_require__(207)
-	var isArray = __webpack_require__(208)
+	var base64 = __webpack_require__(207)
+	var ieee754 = __webpack_require__(208)
+	var isArray = __webpack_require__(209)
 
 	exports.Buffer = Buffer
 	exports.SlowBuffer = SlowBuffer
@@ -25201,10 +25186,10 @@
 	  return i
 	}
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(205).Buffer, (function() { return this; }())))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(206).Buffer, (function() { return this; }())))
 
 /***/ },
-/* 206 */
+/* 207 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
@@ -25334,7 +25319,7 @@
 
 
 /***/ },
-/* 207 */
+/* 208 */
 /***/ function(module, exports) {
 
 	exports.read = function (buffer, offset, isLE, mLen, nBytes) {
@@ -25424,7 +25409,7 @@
 
 
 /***/ },
-/* 208 */
+/* 209 */
 /***/ function(module, exports) {
 
 	var toString = {}.toString;
@@ -25435,7 +25420,7 @@
 
 
 /***/ },
-/* 209 */
+/* 210 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -25456,11 +25441,11 @@
 
 	var _Container3 = _interopRequireDefault(_Container2);
 
-	var _PostBox = __webpack_require__(210);
+	var _PostBox = __webpack_require__(211);
 
 	var _PostBox2 = _interopRequireDefault(_PostBox);
 
-	var _CommentBox = __webpack_require__(211);
+	var _CommentBox = __webpack_require__(212);
 
 	var _CommentBox2 = _interopRequireDefault(_CommentBox);
 
@@ -25547,7 +25532,7 @@
 	exports.default = Comments;
 
 /***/ },
-/* 210 */
+/* 211 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -25705,7 +25690,7 @@
 	exports.default = PostBox;
 
 /***/ },
-/* 211 */
+/* 212 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -25720,7 +25705,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _CommentItem = __webpack_require__(212);
+	var _CommentItem = __webpack_require__(213);
 
 	var _CommentItem2 = _interopRequireDefault(_CommentItem);
 
@@ -25777,7 +25762,7 @@
 	exports.default = CommentBox;
 
 /***/ },
-/* 212 */
+/* 213 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -25894,7 +25879,7 @@
 	exports.default = CommentItem;
 
 /***/ },
-/* 213 */
+/* 214 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -25910,6 +25895,12 @@
 	var _react2 = _interopRequireDefault(_react);
 
 	var _phonepack = __webpack_require__(185);
+
+	var _Login = __webpack_require__(215);
+
+	var _Login2 = _interopRequireDefault(_Login);
+
+	__webpack_require__(216);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -25933,7 +25924,7 @@
 	        value: function login() {
 	            openFB.login(function (data) {
 	                openFB.api({
-	                    path: '/me?fields=gender,location',
+	                    path: '/me',
 	                    success: function success(data) {
 	                        var user = data;
 	                        user.avatarUrl = 'http://graph.facebook.com/' + data.id + '/picture?type=small';
@@ -25952,32 +25943,7 @@
 	    }, {
 	        key: 'render',
 	        value: function render() {
-	            return _react2.default.createElement(
-	                'div',
-	                { className: 'pages', style: { 'backgroundSize': 'cover', 'backgroundImage': 'url(http://39yny21p8fx4asd2a1n4klsx.wpengine.netdna-cdn.com/wp-content/uploads/2014/06/secret1.jpg)' } },
-	                _react2.default.createElement(
-	                    'section',
-	                    { className: 'content content--padding' },
-	                    _react2.default.createElement(
-	                        'div',
-	                        { className: 'row row--gutters', style: { 'height': '100%' } },
-	                        _react2.default.createElement(
-	                            'div',
-	                            { className: 'cell cell--bottom' },
-	                            _react2.default.createElement(
-	                                'h1',
-	                                { className: 'text-white', style: { 'textAlign': 'center', 'margin': '0px auto 15px', 'textShadow': '1px 1px #000' } },
-	                                'Secreto'
-	                            ),
-	                            _react2.default.createElement(
-	                                'button',
-	                                { className: 'button button--large button--block button--raised ripple bg-indigo text-white loginfb', onClick: this.login.bind(this) },
-	                                'Login'
-	                            )
-	                        )
-	                    )
-	                )
-	            );
+	            return _Login2.default.call(this);
 	        }
 	    }]);
 
@@ -25987,7 +25953,62 @@
 	exports.default = Login;
 
 /***/ },
-/* 214 */
+/* 215 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.default = Login;
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _phonepack = __webpack_require__(185);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function Login() {
+	    return _react2.default.createElement(
+	        _phonepack.View,
+	        { className: 'bg-blue-grey' },
+	        _react2.default.createElement(
+	            _phonepack.Content,
+	            { padding: true, className: 'login' },
+	            _react2.default.createElement(
+	                _phonepack.Row,
+	                { className: 'row--gutters', style: { 'height': '100%' } },
+	                _react2.default.createElement(
+	                    _phonepack.Cell,
+	                    { className: 'cell--bottom' },
+	                    _react2.default.createElement(
+	                        'h1',
+	                        { className: 'text-white logo' },
+	                        'Secreto'
+	                    ),
+	                    _react2.default.createElement(
+	                        _phonepack.Button,
+	                        { ripple: true, className: 'button--large button--block button--raised bg-indigo text-white', onClick: this.login.bind(this) },
+	                        'Login'
+	                    )
+	                )
+	            )
+	        )
+	    );
+	}
+
+/***/ },
+/* 216 */
+/***/ function(module, exports) {
+
+	// removed by extract-text-webpack-plugin
+	"use strict";
+
+/***/ },
+/* 217 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -26098,6 +26119,13 @@
 	}(_Container3.default);
 
 	exports.default = Notifications;
+
+/***/ },
+/* 218 */
+/***/ function(module, exports) {
+
+	// removed by extract-text-webpack-plugin
+	"use strict";
 
 /***/ }
 /******/ ]);

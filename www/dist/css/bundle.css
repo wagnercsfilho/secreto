@@ -1,0 +1,183 @@
+.login .logo {
+  text-align: center;
+  margin: '0px auto 15px'; }
+ul.quote-card {
+  margin: 0;
+  padding: 0; }
+
+ul.quote-card li {
+  background-color: #fff;
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  color: #222222;
+  padding: 20px;
+  box-sizing: border-box;
+  box-shadow: 0 2px 4px rgba(34, 34, 34, 0.12);
+  position: relative;
+  overflow: hidden;
+  min-height: 300px;
+  margin: 0;
+  display: -webkit-flex;
+  /* Safari */
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-justify-content: center;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  border-bottom: 5px solid rgba(255, 255, 255, 0.1); }
+
+ul.quote-card li .image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.1);
+  z-index: 0; }
+
+.quote-mini {
+  overflow: hidden;
+  min-height: 200px;
+  height: 200px;
+  width: 50%;
+  display: inline-block;
+  opacity: 0.5; }
+
+.quote-noti-read {
+  opacity: 1; }
+
+.quote-card:before {
+  content: ' ';
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.1);
+  z-index: -100; }
+
+ul.quote-card li p {
+  text-align: center;
+  font-size: 22px;
+  line-height: 1.5;
+  margin: 0;
+  width: 100%;
+  font-weight: 700;
+  word-wrap: break-word;
+  padding: 25% 0px;
+  color: #ffffff;
+  z-index: 1;
+  text-shadow: 2px 0 0 #000, -2px 0 0 #000, 0 2px 0 #000, 0 -2px 0 #000, 1px 1px #000, -1px -1px 0 #101010, 1px -1px 0 #040404, -1px 1px 0 #000; }
+
+ul.quote-card li cite {
+  font-size: 16px;
+  margin-top: 10px;
+  display: block;
+  font-weight: 200;
+  text-align: right;
+  font-style: normal; }
+
+ul.quote-card li .quote_bottom {
+  position: absolute;
+  bottom: 5px;
+  left: 5px;
+  right: 15px;
+  color: #fff;
+  z-index: 1; }
+
+ul.quote-card li .quote_bottom span {
+  display: inline-block;
+  line-height: 40px;
+  font-size: 14px; }
+
+ul.quote-card li .quote_bottom .button .icon {
+  font-size: 22px; }
+
+ul.quote-card li .quote_top {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  right: 5px;
+  color: #ffffff; }
+
+.txt-lodyas {
+  background-image: url(/www/dist/img/img-9a30e6.png); }
+
+.txt-ignasi {
+  background-image: url(/www/dist/img/img-4b9d6e.png); }
+
+.txt-restaurant {
+  background-image: url(/www/dist/img/img-aee038.png); }
+
+.txt-school {
+  background-image: url(/www/dist/img/img-7453d5.png); }
+
+.txt-weather {
+  background-image: url(/www/dist/img/img-e94dff.png); }
+
+.compose-textarea {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  outline: none;
+  width: 100%;
+  text-align: center;
+  outline: none;
+  resize: none;
+  box-shadow: none;
+  font-weight: 700;
+  color: #ffffff;
+  text-shadow: 2px 0 0 #000, -2px 0 0 #000, 0 2px 0 #000, 0 -2px 0 #000, 1px 1px #000, -1px -1px 0 #101010, 1px -1px 0 #040404, -1px 1px 0 #000; }
+
+.compose-textarea::-webkit-input-placeholder {
+  text-shadow: none;
+  font-weight: 300;
+  color: #ffffff; }
+
+.compose-textarea:-moz-placeholder {
+  /* Firefox 18- */
+  text-shadow: none;
+  font-weight: 300;
+  color: #ffffff; }
+
+.compose-textarea::-moz-placeholder {
+  /* Firefox 19+ */
+  text-shadow: none;
+  font-weight: 300;
+  color: #ffffff; }
+
+.compose-textarea:-ms-input-placeholder {
+  text-shadow: none;
+  font-weight: 300;
+  color: #ffffff; }
+
+.avatarUserQuote {
+  width: 10%;
+  border-radius: 50%;
+  vertical-align: middle;
+  margin-right: 10px; }
+
+.hide {
+  display: none; }
+
+.badge {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  top: 5px;
+  right: 0;
+  line-height: 18px;
+  border-radius: 50%;
+  color: #ffffff;
+  font-size: 11px; }
+
+.footer .text-field {
+  margin: 0; }

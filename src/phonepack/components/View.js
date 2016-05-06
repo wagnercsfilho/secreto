@@ -1,4 +1,5 @@
 import React from 'react'
+import classnames from 'classnames'
 
 class View extends React.Component {
 
@@ -27,9 +28,13 @@ class View extends React.Component {
         else if (!this.props.loading && this.loading) {
             this.hideLoadingPlugin();
         }
+        
+        let {className, ...other} = this.props;
+        let cls = classnames('pages', className);
 
         return (
-            <div className="pages">
+            
+            <div className={cls} {...other}>
                 { this.props.children }
             </div>
         )
