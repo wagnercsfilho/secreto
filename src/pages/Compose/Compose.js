@@ -3,6 +3,46 @@ import Container from '../../redux/Container'
 import actions from "../../redux/actions"
 import template from './Compose.jsx'
 
+var s3Uploader = (function() {
+    function upload(imageURI, fileName) {
+        return new Promise(function(resolve, reject) {
+            var ft = new FileTransfer();
+            var options = new FileUploadOptions();
+
+            options.fileKey = "file";
+            options.fileName = fileName;
+            options.mimeType = "image/jpeg";
+            options.chunkedMode = false;
+
+            socket.emit('sign', fileName, function(data) {
+                options.params = {
+                    "key": fileName,
+                    "AWSAccessKeyId": data.awsKey,
+                    "acl": "public-read",
+                    "policy": data.policy,
+                    "signature": data.signature,
+                    "Content-Type": "image/jpeg"
+                };
+
+                ft.upload(imageURI, "https://" + data.bucket + ".s3.amazonaws.com/",
+                    function(e) {
+                      console.log("https://" + data.bucket + ".s3.amazonaws.com/" + fileName)
+                        resolve("https://" + data.bucket + ".s3.amazonaws.com/" + fileName);
+                    },
+                    function(e) {
+                        alert("Upload failed");
+                        reject(e);
+                    }, options);
+            });
+        });
+    }
+
+    return {
+        upload: upload
+    }
+
+}());
+
 class Compose extends Container {
 
     render() {
@@ -18,11 +58,9 @@ class Compose extends Container {
             _user: window.currentUser._id
         };
         this.lastImages = null;
-
         this.state = {
             textCompose: ""
         }
-
         this.textures = ['txt-concrete', 'txt-lodyas', 'txt-ignasi', 'txt-restaurant', 'txt-school', 'txt-weather'];
         this.textureIndex = 0;
     }
@@ -43,7 +81,7 @@ class Compose extends Container {
         getCameraPicture(Camera.PictureSourceType.CAMERA)
             .then((imageURI) => {
                 this.refs.postTexture.style.backgroundImage = 'url(' + imageURI + ')';
-                this.post.upload = imageURI;
+                this.upload = imageURI;
             }).catch((err) => {
                 alert('Failed because: ' + err);
             });
@@ -53,6 +91,7 @@ class Compose extends Container {
         getCameraPicture(Camera.PictureSourceType.PHOTOLIBRARY)
             .then((imageURI) => {
                 this.refs.postTexture.style.backgroundImage = 'url(' + imageURI + ')';
+                this.upload = imageURI;
             }).catch((err) => {
                 alert('Failed because: ' + err);
             });
@@ -65,8 +104,8 @@ class Compose extends Container {
         if (this.upload) {
             var fileName = "" + (new Date()).getTime() + ".jpg"; // consider a more reliable way to generate unique ids
             s3Uploader.upload(this.upload, fileName)
-                .then(() => {
-                    alert("S3 upload succeeded");
+                .then((fileUri) => {
+                    this.post.imageBackground = fileUri;
 
                     this.dispatch(actions.createPost(this.post, () => {
                         let notification = new phonepack.Notification();
@@ -76,7 +115,8 @@ class Compose extends Container {
 
                 })
                 .catch((e) => {
-                    alert("S3 upload failed");
+                    console.log(e)
+                    alert("Upload failed");
                 });
         }
         else {
@@ -86,9 +126,6 @@ class Compose extends Container {
                 this.closeCurrentPage('mainNav');
             }));
         }
-
-
-
 
     }
 
@@ -141,48 +178,3 @@ function getCameraPicture(sourceType) {
     });
 
 }
-
-var s3Uploader = (function() {
-
-    var signingURI = "http://192.168.1.8:3000/signing";
-
-    function upload(imageURI, fileName) {
-
-        return new Promise(function(resolve, reject) {
-
-            var ft = new FileTransfer();
-            var options = new FileUploadOptions();
-
-            options.fileKey = "file";
-            options.fileName = fileName;
-            options.mimeType = "image/jpeg";
-            options.chunkedMode = false;
-
-            socket.emit('sign', fileName, function(data) {
-                options.params = {
-                    "key": fileName,
-                    "AWSAccessKeyId": data.awsKey,
-                    "acl": "public-read",
-                    "policy": data.policy,
-                    "signature": data.signature,
-                    "Content-Type": "image/jpeg"
-                };
-
-                ft.upload(imageURI, "https://" + data.bucket + ".s3.amazonaws.com/",
-                    function(e) {
-                        resolve(e);
-                    },
-                    function(e) {
-                        alert("Upload failed");
-                        reject(e);
-                    }, options);
-
-            });
-        });
-    }
-
-    return {
-        upload: upload
-    }
-
-}());

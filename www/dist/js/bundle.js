@@ -34,7 +34,7 @@
 /******/ 	__webpack_require__.c = installedModules;
 
 /******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "/www/";
+/******/ 	__webpack_require__.p = "/";
 
 /******/ 	// Load entry module and return exports
 /******/ 	return __webpack_require__(0);
@@ -59,6 +59,10 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.socket = io.connect('https://secreto-server-wagnercsfilho.c9users.io/');
+
+	document.addEventListener("deviceready", function () {
+	    StatusBar.backgroundColorByName("lightGray");
+	}, false);
 
 	openFB.init({
 	    appId: '1707024216207772'
@@ -20055,19 +20059,19 @@
 
 	var _FindImage2 = _interopRequireDefault(_FindImage);
 
-	var _Comments = __webpack_require__(211);
+	var _Comments = __webpack_require__(212);
 
 	var _Comments2 = _interopRequireDefault(_Comments);
 
-	var _Login = __webpack_require__(215);
+	var _Login = __webpack_require__(216);
 
 	var _Login2 = _interopRequireDefault(_Login);
 
-	var _Notifications = __webpack_require__(218);
+	var _Notifications = __webpack_require__(219);
 
 	var _Notifications2 = _interopRequireDefault(_Notifications);
 
-	__webpack_require__(219);
+	__webpack_require__(220);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -23041,6 +23045,43 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+	var s3Uploader = function () {
+	    function upload(imageURI, fileName) {
+	        return new Promise(function (resolve, reject) {
+	            var ft = new FileTransfer();
+	            var options = new FileUploadOptions();
+
+	            options.fileKey = "file";
+	            options.fileName = fileName;
+	            options.mimeType = "image/jpeg";
+	            options.chunkedMode = false;
+
+	            socket.emit('sign', fileName, function (data) {
+	                options.params = {
+	                    "key": fileName,
+	                    "AWSAccessKeyId": data.awsKey,
+	                    "acl": "public-read",
+	                    "policy": data.policy,
+	                    "signature": data.signature,
+	                    "Content-Type": "image/jpeg"
+	                };
+
+	                ft.upload(imageURI, "https://" + data.bucket + ".s3.amazonaws.com/", function (e) {
+	                    console.log("https://" + data.bucket + ".s3.amazonaws.com/" + fileName);
+	                    resolve("https://" + data.bucket + ".s3.amazonaws.com/" + fileName);
+	                }, function (e) {
+	                    alert("Upload failed");
+	                    reject(e);
+	                }, options);
+	            });
+	        });
+	    }
+
+	    return {
+	        upload: upload
+	    };
+	}();
+
 	var Compose = function (_Container) {
 	    _inherits(Compose, _Container);
 
@@ -23063,11 +23104,9 @@
 	            _user: window.currentUser._id
 	        };
 	        _this.lastImages = null;
-
 	        _this.state = {
 	            textCompose: ""
 	        };
-
 	        _this.textures = ['txt-concrete', 'txt-lodyas', 'txt-ignasi', 'txt-restaurant', 'txt-school', 'txt-weather'];
 	        _this.textureIndex = 0;
 	        return _this;
@@ -23094,7 +23133,7 @@
 
 	            getCameraPicture(Camera.PictureSourceType.CAMERA).then(function (imageURI) {
 	                _this2.refs.postTexture.style.backgroundImage = 'url(' + imageURI + ')';
-	                _this2.post.upload = imageURI;
+	                _this2.upload = imageURI;
 	            }).catch(function (err) {
 	                alert('Failed because: ' + err);
 	            });
@@ -23106,6 +23145,7 @@
 
 	            getCameraPicture(Camera.PictureSourceType.PHOTOLIBRARY).then(function (imageURI) {
 	                _this3.refs.postTexture.style.backgroundImage = 'url(' + imageURI + ')';
+	                _this3.upload = imageURI;
 	            }).catch(function (err) {
 	                alert('Failed because: ' + err);
 	            });
@@ -23120,8 +23160,8 @@
 
 	            if (this.upload) {
 	                var fileName = "" + new Date().getTime() + ".jpg"; // consider a more reliable way to generate unique ids
-	                s3Uploader.upload(this.upload, fileName).then(function () {
-	                    alert("S3 upload succeeded");
+	                s3Uploader.upload(this.upload, fileName).then(function (fileUri) {
+	                    _this4.post.imageBackground = fileUri;
 
 	                    _this4.dispatch(_actions2.default.createPost(_this4.post, function () {
 	                        var notification = new phonepack.Notification();
@@ -23129,7 +23169,8 @@
 	                        _this4.closeCurrentPage('mainNav');
 	                    }));
 	                }).catch(function (e) {
-	                    alert("S3 upload failed");
+	                    console.log(e);
+	                    alert("Upload failed");
 	                });
 	            } else {
 	                this.dispatch(_actions2.default.createPost(this.post, function () {
@@ -23194,47 +23235,6 @@
 	        });
 	    });
 	}
-
-	var s3Uploader = function () {
-
-	    var signingURI = "http://192.168.1.8:3000/signing";
-
-	    function upload(imageURI, fileName) {
-
-	        return new Promise(function (resolve, reject) {
-
-	            var ft = new FileTransfer();
-	            var options = new FileUploadOptions();
-
-	            options.fileKey = "file";
-	            options.fileName = fileName;
-	            options.mimeType = "image/jpeg";
-	            options.chunkedMode = false;
-
-	            socket.emit('sign', fileName, function (data) {
-	                options.params = {
-	                    "key": fileName,
-	                    "AWSAccessKeyId": data.awsKey,
-	                    "acl": "public-read",
-	                    "policy": data.policy,
-	                    "signature": data.signature,
-	                    "Content-Type": "image/jpeg"
-	                };
-
-	                ft.upload(imageURI, "https://" + data.bucket + ".s3.amazonaws.com/", function (e) {
-	                    resolve(e);
-	                }, function (e) {
-	                    alert("Upload failed");
-	                    reject(e);
-	                }, options);
-	            });
-	        });
-	    }
-
-	    return {
-	        upload: upload
-	    };
-	}();
 
 /***/ },
 /* 203 */
@@ -23386,7 +23386,7 @@
 
 	var _FindImage2 = _interopRequireDefault(_FindImage);
 
-	__webpack_require__(220);
+	__webpack_require__(211);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -25558,6 +25558,13 @@
 
 /***/ },
 /* 211 */
+/***/ function(module, exports) {
+
+	// removed by extract-text-webpack-plugin
+	"use strict";
+
+/***/ },
+/* 212 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -25578,11 +25585,11 @@
 
 	var _Container3 = _interopRequireDefault(_Container2);
 
-	var _PostBox = __webpack_require__(212);
+	var _PostBox = __webpack_require__(213);
 
 	var _PostBox2 = _interopRequireDefault(_PostBox);
 
-	var _CommentBox = __webpack_require__(213);
+	var _CommentBox = __webpack_require__(214);
 
 	var _CommentBox2 = _interopRequireDefault(_CommentBox);
 
@@ -25669,7 +25676,7 @@
 	exports.default = Comments;
 
 /***/ },
-/* 212 */
+/* 213 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -25827,7 +25834,7 @@
 	exports.default = PostBox;
 
 /***/ },
-/* 213 */
+/* 214 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -25842,7 +25849,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _CommentItem = __webpack_require__(214);
+	var _CommentItem = __webpack_require__(215);
 
 	var _CommentItem2 = _interopRequireDefault(_CommentItem);
 
@@ -25899,7 +25906,7 @@
 	exports.default = CommentBox;
 
 /***/ },
-/* 214 */
+/* 215 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -26016,7 +26023,7 @@
 	exports.default = CommentItem;
 
 /***/ },
-/* 215 */
+/* 216 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -26033,11 +26040,11 @@
 
 	var _phonepack = __webpack_require__(185);
 
-	var _Login = __webpack_require__(216);
+	var _Login = __webpack_require__(217);
 
 	var _Login2 = _interopRequireDefault(_Login);
 
-	__webpack_require__(217);
+	__webpack_require__(218);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -26090,7 +26097,7 @@
 	exports.default = Login;
 
 /***/ },
-/* 216 */
+/* 217 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -26138,14 +26145,14 @@
 	}
 
 /***/ },
-/* 217 */
+/* 218 */
 /***/ function(module, exports) {
 
 	// removed by extract-text-webpack-plugin
 	"use strict";
 
 /***/ },
-/* 218 */
+/* 219 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -26256,13 +26263,6 @@
 	}(_Container3.default);
 
 	exports.default = Notifications;
-
-/***/ },
-/* 219 */
-/***/ function(module, exports) {
-
-	// removed by extract-text-webpack-plugin
-	"use strict";
 
 /***/ },
 /* 220 */
