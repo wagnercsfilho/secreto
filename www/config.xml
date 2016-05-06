@@ -55,13 +55,6 @@
     <gap:plugin name="org.apache.cordova.vibration" />
     <gap:plugin name="com.indigoway.cordova.whitelist.whitelistplugin" spec="1.1.1" source="pgb" />
 
-
-
     <access origin="*"/>
-    <!-- The above is equivalent to these three declarations -->
-    <allow-navigation href="http://*/*" />
-    <allow-navigation href="https://*/*" />
-    <allow-navigation href="data:*" />
-    
-
+  
 </widget>
