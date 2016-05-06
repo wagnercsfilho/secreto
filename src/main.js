@@ -2,7 +2,7 @@ import React from 'react'
 import { render } from 'react-dom'
 import App from './App.js'
 
-window.socket = io.connect('https://secreto-server-wagnercsfilho.c9users.io/');
+window.socket = io.connect('https://weezer.herokuapp.com/');
 
 document.addEventListener("deviceready", function () {
     StatusBar.backgroundColorByName("lightGray");
