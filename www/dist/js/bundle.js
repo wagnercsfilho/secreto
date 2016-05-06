@@ -58,7 +58,7 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	window.socket = io.connect('https://secreto-server-wagnercsfilho.c9users.io/');
+	window.socket = io.connect('https://weezer.herokuapp.com/');
 
 	document.addEventListener("deviceready", function () {
 	    StatusBar.backgroundColorByName("lightGray");
